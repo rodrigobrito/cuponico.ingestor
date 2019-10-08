@@ -1,2 +1,2 @@
 # cuponico-ingestor
-Cuponico Data Ingestor
+Partner Data Ingestor
