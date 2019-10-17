@@ -1,12 +1,12 @@
-﻿using Elevar.Infrastructure.MongoDb;
-using Ingestor.ConsoleHost.Partners.Lomadee.Http.Coupons.Categories;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Elevar.Infrastructure.MongoDb;
+using Ingestor.ConsoleHost.Partners.Lomadee.Http.Coupons.Categories;
 using MongoDB.Driver;
 
-namespace Ingestor.ConsoleHost.Partners.Lomadee.MongoDb.Coupons.Categories
+namespace Ingestor.ConsoleHost.Partners.Lomadee.Coupons.Categories
 {
     public class LomadeeCategoryMongoDbRepository
     {

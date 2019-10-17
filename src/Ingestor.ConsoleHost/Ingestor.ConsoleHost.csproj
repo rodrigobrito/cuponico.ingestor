@@ -6,11 +6,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Partners\Lomadee\Http\Coupons\Stores\" />
-    <Folder Include="Partners\Lomadee\Http\Coupons\Tickets\" />
+    <Folder Include="Partners\Lomadee\Coupons\Stores\" />
+    <Folder Include="Partners\Lomadee\Coupons\Tickets\" />
+    <Folder Include="Partners\Racuten\" />
+    <Folder Include="Partners\Zanox\" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Coravel" Version="3.0.0" />
     <PackageReference Include="Elevar" Version="1.0.0" />
     <PackageReference Include="Elevar.Domain" Version="1.0.0" />
     <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />

@@ -2,21 +2,23 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Coravel.Invocable;
+using Ingestor.ConsoleHost.Partners.Lomadee.Coupons.Categories;
 using Ingestor.ConsoleHost.Partners.Lomadee.Http.Coupons.Categories;
-using Ingestor.ConsoleHost.Partners.Lomadee.MongoDb.Coupons.Categories;
 
-namespace Ingestor.ConsoleHost.Partners.Lomadee
+namespace Ingestor.ConsoleHost.Partners.Lomadee.Jobs
 {
-    public class CouponsCategoryHttpToMongoDb : IHttpToMongoDb
+    public class LomadeeCategoriesSchedulableJob : IInvocable
     {
         private readonly LomadeeCategoryHttpRepository _httpRepository;
         private readonly LomadeeCategoryMongoDbRepository _mongodbRepository;
-        public CouponsCategoryHttpToMongoDb(LomadeeCategoryHttpRepository httpRepository, LomadeeCategoryMongoDbRepository mongodbRepository)
+        public LomadeeCategoriesSchedulableJob(LomadeeCategoryHttpRepository httpRepository, LomadeeCategoryMongoDbRepository mongodbRepository)
         {
             _httpRepository = httpRepository ?? throw new ArgumentNullException(nameof(httpRepository));
             _mongodbRepository = mongodbRepository ?? throw new ArgumentNullException(nameof(mongodbRepository));
         }
-        public async Task Import()
+
+        public async Task Invoke()
         {
             var lomadeeCategories = await _httpRepository.GetAllAsync();
             if (!lomadeeCategories.Any()) return;
@@ -45,12 +47,10 @@ namespace Ingestor.ConsoleHost.Partners.Lomadee
             }
 
             if (localCategories != null)
-            {
                 categoriesToDelete.AddRange(localCategories.Where(localCategory => lomadeeCategories.All(lomadee => lomadee.Id != localCategory.Id)));
-            }
 
             if (categoriesToInsert.Any())
-               await _mongodbRepository.SaveAsync(categoriesToInsert);
+                await _mongodbRepository.SaveAsync(categoriesToInsert);
 
             if (categoriesToUpdate.Any())
                 await _mongodbRepository.SaveAsync(categoriesToUpdate);
