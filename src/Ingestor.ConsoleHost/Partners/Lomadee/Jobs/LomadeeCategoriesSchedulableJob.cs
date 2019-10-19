@@ -55,8 +55,8 @@ namespace Ingestor.ConsoleHost.Partners.Lomadee.Jobs
             if (categoriesToUpdate.Any())
                 await _mongodbRepository.SaveAsync(categoriesToUpdate);
 
-            if (categoriesToUpdate.Any())
-                await _mongodbRepository.DeleteAsync(categoriesToUpdate.Select(x => x.Id).ToList());
+            if (categoriesToDelete.Any())
+                await _mongodbRepository.DeleteAsync(categoriesToDelete.Select(x => x.Id).ToList());
         }
     }
 }

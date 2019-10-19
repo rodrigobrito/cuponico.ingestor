@@ -6,7 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Partners\Lomadee\Coupons\Stores\" />
     <Folder Include="Partners\Lomadee\Coupons\Tickets\" />
     <Folder Include="Partners\Racuten\" />
     <Folder Include="Partners\Zanox\" />

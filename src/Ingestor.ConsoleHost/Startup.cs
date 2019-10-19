@@ -3,7 +3,7 @@ using System.IO;
 using Coravel;
 using Ingestor.ConsoleHost.Partners.Lomadee;
 using Ingestor.ConsoleHost.Partners.Lomadee.Coupons.Categories;
-using Ingestor.ConsoleHost.Partners.Lomadee.Http.Coupons.Categories;
+using Ingestor.ConsoleHost.Partners.Lomadee.Coupons.Stores;
 using Ingestor.ConsoleHost.Partners.Lomadee.Jobs;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -63,6 +63,14 @@ namespace Ingestor.ConsoleHost
             }).AddPolicyHandler(retryPolicy);
             services.AddSingleton<LomadeeCategoryMongoDbRepository>();
             services.AddTransient<LomadeeCategoriesSchedulableJob>();
+
+            // Stores
+            services.AddHttpClient<LomadeeStoreHttpRepository>(c =>
+            {
+                c.BaseAddress = new Uri(lomadeeSettings.Http.Host);
+            }).AddPolicyHandler(retryPolicy);
+            services.AddSingleton<LomadeeStoreMongoDbRepository>();
+            services.AddTransient<LomadeeStoresSchedulableJob>();
         }
 
         public IConfigurationRoot Configuration { get; set; }

@@ -10,6 +10,8 @@ namespace Ingestor.ConsoleHost
     {
         private static void Main()
         {
+            Console.WriteLine("Starting...");
+
             var cancelationTokenSource = new CancellationTokenSource();
             var cancelToken = cancelationTokenSource.Token;
 
@@ -18,11 +20,18 @@ namespace Ingestor.ConsoleHost
                             .UseKestrel()
                             .Build();
 
-            host.Services.UseScheduler(scheduler =>
+            var services = host.Services;
+            services.UseScheduler(scheduler =>
             {
+                scheduler.OnWorker("Lomadee.Categories.Importer");
                 scheduler.Schedule<LomadeeCategoriesSchedulableJob>().EveryMinute();
+
+                scheduler.OnWorker("Lomadee.Stores.Importer");
+                scheduler.Schedule<LomadeeStoresSchedulableJob>().EveryMinute();
             });
             host.Start();
+
+            Console.WriteLine("Started.");
 
             Console.CancelKeyPress += (_, e) =>
             {
