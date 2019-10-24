@@ -22,6 +22,9 @@ namespace Ingestor.ConsoleHost.Partners.Lomadee.Jobs
             var lomadeeCoupons = await _httpRepository.GetAllAsync();
             if (!lomadeeCoupons.Any()) return;
 
+            foreach (var coupon in lomadeeCoupons)
+                coupon.Vigency = coupon.Vigency.ToUniversalTime();
+
             var couponsToInsert = new List<LomadeeCoupon>();
             var couponsToUpdate = new List<LomadeeCoupon>();
             var couponsToDelete = new List<LomadeeCoupon>();
