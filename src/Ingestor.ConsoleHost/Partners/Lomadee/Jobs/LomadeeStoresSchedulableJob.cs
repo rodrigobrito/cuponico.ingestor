@@ -31,14 +31,14 @@ namespace Ingestor.ConsoleHost.Partners.Lomadee.Jobs
             {
                 if (lomadeeStore == null) continue;
 
-                var localCategory = localStores?.FirstOrDefault(local => local.Id == lomadeeStore.Id);
-                if (localCategory == null)
+                var localStore = localStores?.FirstOrDefault(local => local.Id == lomadeeStore.Id);
+                if (localStore == null)
                 {
                     storesToInsert.Add(lomadeeStore);
                 }
                 else
                 {
-                    if (!localCategory.Equals(lomadeeStore))
+                    if (!localStore.Equals(lomadeeStore))
                     {
                         storesToUpdate.Add(lomadeeStore);
                     }
@@ -46,7 +46,7 @@ namespace Ingestor.ConsoleHost.Partners.Lomadee.Jobs
             }
 
             if (localStores != null)
-                storesToDelete.AddRange(localStores.Where(localCategory => lomadeeStores.All(lomadee => lomadee.Id != localCategory.Id)));
+                storesToDelete.AddRange(localStores.Where(localStore => lomadeeStores.All(lomadee => lomadee.Id != localStore.Id)));
 
             if (storesToInsert.Any())
                 await _mongodbRepository.SaveAsync(storesToInsert);

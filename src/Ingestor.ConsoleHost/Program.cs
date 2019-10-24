@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using Coravel;
+using Ingestor.ConsoleHost.Partners.Lomadee.Jobs;
+using Microsoft.AspNetCore.Hosting;
 using System;
 using System.Threading;
-using Coravel;
-using Ingestor.ConsoleHost.Partners.Lomadee.Jobs;
 
 namespace Ingestor.ConsoleHost
 {
@@ -28,6 +28,9 @@ namespace Ingestor.ConsoleHost
 
                 scheduler.OnWorker("Lomadee.Stores.Importer");
                 scheduler.Schedule<LomadeeStoresSchedulableJob>().EveryMinute();
+
+                scheduler.OnWorker("Lomadee.Coupons.Importer");
+                scheduler.Schedule<LomadeeCouponsSchedulableJob>().EveryMinute();
             });
             host.Start();
 

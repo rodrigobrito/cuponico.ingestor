@@ -1,8 +1,9 @@
-﻿using Newtonsoft.Json;
+﻿using Ingestor.ConsoleHost.Partners.Lomadee.Http;
+using Newtonsoft.Json;
 
-namespace Ingestor.ConsoleHost.Partners.Lomadee.Http
+namespace Ingestor.ConsoleHost.Partners.Lomadee
 {
-    internal abstract class LomadeeBaseResponse
+    public abstract class LomadeeBaseResponse
     {
         [JsonProperty("requestInfo")]
         internal LomadeeRequestInfo RequestInfo { get; set; }
