@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Ingestor.ConsoleHost.Partners.Lomadee.Http
+namespace Ingestor.ConsoleHost.Partners.Lomadee
 {
     internal class LomadeePagination
     {

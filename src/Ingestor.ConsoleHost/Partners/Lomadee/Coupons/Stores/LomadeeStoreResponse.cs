@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Ingestor.ConsoleHost.Partners.Lomadee.Http;
 using Newtonsoft.Json;
 
 namespace Ingestor.ConsoleHost.Partners.Lomadee.Coupons.Stores

@@ -1,5 +1,4 @@
-﻿using Ingestor.ConsoleHost.Partners.Lomadee.Http;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace Ingestor.ConsoleHost.Partners.Lomadee
 {

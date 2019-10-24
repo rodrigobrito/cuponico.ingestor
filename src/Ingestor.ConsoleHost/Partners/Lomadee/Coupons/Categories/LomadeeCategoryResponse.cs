@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace Ingestor.ConsoleHost.Partners.Lomadee.Http.Coupons.Categories
+namespace Ingestor.ConsoleHost.Partners.Lomadee.Coupons.Categories
 {
     internal class LomadeeCategoryResponse : LomadeeBaseResponse
     {

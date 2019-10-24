@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Coravel.Invocable;
 using Ingestor.ConsoleHost.Partners.Lomadee.Coupons.Categories;
-using Ingestor.ConsoleHost.Partners.Lomadee.Http.Coupons.Categories;
 
 namespace Ingestor.ConsoleHost.Partners.Lomadee.Jobs
 {

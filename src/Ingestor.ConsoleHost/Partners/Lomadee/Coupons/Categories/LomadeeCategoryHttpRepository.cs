@@ -3,7 +3,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Elevar.Utils;
-using Ingestor.ConsoleHost.Partners.Lomadee.Http.Coupons.Categories;
 using Newtonsoft.Json;
 
 namespace Ingestor.ConsoleHost.Partners.Lomadee.Coupons.Categories

@@ -2,7 +2,7 @@
 using MongoDB.Bson.Serialization.Attributes;
 using Newtonsoft.Json;
 
-namespace Ingestor.ConsoleHost.Partners.Lomadee.Http.Coupons.Categories
+namespace Ingestor.ConsoleHost.Partners.Lomadee.Coupons.Categories
 {
     public class LomadeeCategory
     {
@@ -16,14 +16,14 @@ namespace Ingestor.ConsoleHost.Partners.Lomadee.Http.Coupons.Categories
 
         protected bool Equals(LomadeeCategory other)
         {
-            return Id == other.Id && Name == other.Name && Equals(Link.ToString(), other.Link.ToString());
+            return Id == other.Id && Name == other.Name && Equals(Link, other.Link);
         }
 
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != GetType()) return false;
+            if (obj.GetType() != this.GetType()) return false;
             return Equals((LomadeeCategory) obj);
         }
 

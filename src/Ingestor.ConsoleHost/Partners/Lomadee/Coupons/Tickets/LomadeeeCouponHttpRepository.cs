@@ -29,11 +29,6 @@ namespace Ingestor.ConsoleHost.Partners.Lomadee.Coupons.Tickets
             if (response == null || !response.Coupons.Any())
                 return new PagedList<LomadeeCoupon>();
 
-            foreach (var coupon in response.Coupons)
-            {
-                coupon.UpdateProperties();
-            }
-
             return response.Coupons;
         }
     }
