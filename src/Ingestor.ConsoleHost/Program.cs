@@ -16,8 +16,9 @@ namespace Ingestor.ConsoleHost
             var cancelToken = cancelationTokenSource.Token;
 
             var host = new WebHostBuilder()
-                            .UseStartup<Startup>()
+                            .UseIISIntegration()
                             .UseKestrel()
+                            .UseStartup<Startup>()
                             .Build();
 
             var services = host.Services;
@@ -32,6 +33,7 @@ namespace Ingestor.ConsoleHost
                 scheduler.OnWorker("Lomadee.Coupons.Importer");
                 scheduler.Schedule<LomadeeCouponsSchedulableJob>().EveryMinute();
             });
+
             host.Start();
 
             Console.WriteLine("Started.");
