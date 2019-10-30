@@ -13,8 +13,9 @@
 
   <ItemGroup>
     <PackageReference Include="Coravel" Version="3.0.0" />
-    <PackageReference Include="Elevar" Version="1.0.0" />
-    <PackageReference Include="Elevar.Domain" Version="1.0.0" />
+    <PackageReference Include="Elevar" Version="1.0.0.1" />
+    <PackageReference Include="Elevar.Domain" Version="1.0.0.1" />
+    <PackageReference Include="Elevar.Infrastructure.MongoDb" Version="1.0.0.1" />
     <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.Abstractions" Version="2.2.0" />

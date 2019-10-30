@@ -8,5 +8,5 @@ docker build -t cuponico.ingestor .
 
 Running image
 ```bash
-docker run cuponico.ingestor
+docker run -p 8080:80 cuponico.ingestor
 ```
