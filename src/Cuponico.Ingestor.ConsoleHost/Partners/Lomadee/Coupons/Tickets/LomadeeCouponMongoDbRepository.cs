@@ -18,8 +18,8 @@ namespace Cuponico.Ingestor.Host.Partners.Lomadee.Coupons.Tickets
                 throw new ArgumentNullException(nameof(mongoSettings));
 
             _wrapper = mongoSettings.CreateWrapper();
-            _wrapper.CreateCollectionIfNotExistsAsync<LomadeeStore>(_collectinoName);
-            _wrapper.CreateIndexIfNotExistsAsync<LomadeeStore>(_collectinoName, "couponId", null, e => e.Id);
+            _wrapper.CreateCollectionIfNotExistsAsync<LomadeeCoupon>(_collectinoName);
+            _wrapper.CreateIndexIfNotExistsAsync<LomadeeCoupon>(_collectinoName, "couponId", null, e => e.Id);
         }
 
         public async Task<IList<LomadeeCoupon>> GetAll()
@@ -37,7 +37,7 @@ namespace Cuponico.Ingestor.Host.Partners.Lomadee.Coupons.Tickets
         {
             foreach (var id in ids)
             {
-                var builder = Builders<LomadeeStore>.Filter;
+                var builder = Builders<LomadeeCoupon>.Filter;
                 var filter = builder.Eq(c => c.Id, id);
                 await _wrapper.DeleteOneAsync(_collectinoName, filter);
             }

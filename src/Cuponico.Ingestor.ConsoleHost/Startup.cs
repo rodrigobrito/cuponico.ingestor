@@ -2,9 +2,13 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Coravel;
 using Cuponico.Ingestor.Host.Health;
+using Cuponico.Ingestor.Host.Kafka;
+using Cuponico.Ingestor.Host.Partners.Coupons;
 using Cuponico.Ingestor.Host.Partners.Lomadee;
+using Cuponico.Ingestor.Host.Partners.Lomadee.Coupons;
 using Cuponico.Ingestor.Host.Partners.Lomadee.Coupons.Categories;
 using Cuponico.Ingestor.Host.Partners.Lomadee.Coupons.Stores;
 using Cuponico.Ingestor.Host.Partners.Lomadee.Coupons.Tickets;
@@ -53,10 +57,17 @@ namespace Cuponico.Ingestor.Host
             app.UseMvc();
         }
 
+
         public void ConfigureServices(IServiceCollection services)
         {
             // Add access to generic IConfigurationRoot
             services.AddSingleton(Configuration);
+
+            // Add AutoMapper
+            services.AddAutoMapper(cfg =>
+            {
+                cfg.AddProfile(typeof(LomadeeCouponProfile));
+            }, AppDomain.CurrentDomain.GetAssemblies());
 
             // Add logging
             services.AddLogging((logging) =>
@@ -77,8 +88,12 @@ namespace Cuponico.Ingestor.Host
             services.AddHealthChecks()
                     .AddGcInfoCheck("services");
 
-            // Adding coravel scheduler
+            // Adding scheduler
             services.AddScheduler();
+
+            // Add Kafka
+            services.AddSingleton<KafkaSettings>();
+            services.AddSingleton<KafkaProducer<CouponKey, Coupon>>();
 
             // Add http policies
             var jitterer = new Random();

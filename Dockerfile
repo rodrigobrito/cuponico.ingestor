@@ -5,7 +5,7 @@ EXPOSE 80
 FROM mcr.microsoft.com/dotnet/core/sdk:2.2 AS build
 WORKDIR .
 COPY Ingestor.sln .
-COPY ["src//Ingestor.ConsoleHost//Ingestor.ConsoleHost.csproj", ".//src//Ingestor.ConsoleHost//"]
+COPY ["src//Cuponico.Ingestor.Host//Cuponico.Ingestor.Host.csproj", ".//src//Cuponico.Ingestor.Host//"]
 
 RUN dotnet restore -s https://api.nuget.org/v3/index.json
 COPY . .
@@ -17,4 +17,4 @@ RUN dotnet publish -c Release -o /app
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app .
-ENTRYPOINT ["dotnet", "Ingestor.ConsoleHost.dll"]
+ENTRYPOINT ["dotnet", "Cuponico.Ingestor.Host.dll"]

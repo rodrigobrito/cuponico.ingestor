@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using Elevar.Utils;
 using MongoDB.Bson.Serialization.Attributes;
 using Newtonsoft.Json;
 
@@ -13,6 +14,9 @@ namespace Cuponico.Ingestor.Host.Partners.Lomadee.Coupons.Tickets
 
         [JsonProperty("description")]
         public string Description { get; set; }
+
+        [JsonProperty("friendlyDescription")]
+        public string FriendlyDescription { get; set; }
 
         [JsonProperty("remark")]
         public string Remark { get; set; }
@@ -29,6 +33,7 @@ namespace Cuponico.Ingestor.Host.Partners.Lomadee.Coupons.Tickets
         [JsonProperty("category")]
         public LomadeeCategory Category { get; set; }
 
+        [BsonElement("validity")]
         [JsonProperty("vigency")]
         public DateTime Vigency { get; set; }
 
@@ -38,6 +43,12 @@ namespace Cuponico.Ingestor.Host.Partners.Lomadee.Coupons.Tickets
         [JsonProperty("new")]
         public bool New { get; set; }
 
+        [JsonProperty("isPercentage")]
+        public bool IsPercentage { get; set; }
+
+        [JsonProperty("shipping")]
+        public bool Shipping { get; set; }
+
         public void UpdateProperties()
         {
             // Update description and remark
@@ -46,6 +57,11 @@ namespace Cuponico.Ingestor.Host.Partners.Lomadee.Coupons.Tickets
             Remark = remark;
             // Update discount
             Discount = Discount == 0 ? TryGetDiscountFromDescriptionProperty(this) : Discount;
+            // Friendly name
+            FriendlyDescription = description.ToFriendlyName();
+
+            IsPercentage = string.IsNullOrWhiteSpace(Description) || !Description.Contains("$");
+            Shipping = !string.IsNullOrWhiteSpace(Description) && Description.Contains("frete", StringComparison.OrdinalIgnoreCase);
         }
 
         private static (string, string) ExtractDescriptionAndRemark(string couponText)
@@ -98,16 +114,19 @@ namespace Cuponico.Ingestor.Host.Partners.Lomadee.Coupons.Tickets
 
         protected bool Equals(LomadeeCoupon other)
         {
-            return Id == other.Id && 
-                   Description == other.Description && 
-                   Remark == other.Remark && 
-                   Code == other.Code && 
-                   Discount == other.Discount && 
-                   Equals(Store, other.Store) && 
-                   Equals(Category, other.Category) && 
+            return Id == other.Id &&
+                   Description == other.Description &&
+                   FriendlyDescription == other.FriendlyDescription &&
+                   Remark == other.Remark &&
+                   Code == other.Code &&
+                   Discount == other.Discount &&
+                   Equals(Store, other.Store) &&
+                   Equals(Category, other.Category) &&
                    Vigency.Equals(other.Vigency) &&
-                   Equals(Link, other.Link) && 
-                   New == other.New;
+                   Equals(Link, other.Link) &&
+                   New == other.New &&
+                   IsPercentage == other.IsPercentage &&
+                   Shipping == other.Shipping;
         }
 
         public override bool Equals(object obj)
@@ -115,7 +134,7 @@ namespace Cuponico.Ingestor.Host.Partners.Lomadee.Coupons.Tickets
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != this.GetType()) return false;
-            return Equals((LomadeeCoupon) obj);
+            return Equals((LomadeeCoupon)obj);
         }
 
         public override int GetHashCode()
@@ -124,6 +143,7 @@ namespace Cuponico.Ingestor.Host.Partners.Lomadee.Coupons.Tickets
             {
                 var hashCode = Id.GetHashCode();
                 hashCode = (hashCode * 397) ^ (Description != null ? Description.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (FriendlyDescription != null ? FriendlyDescription.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (Remark != null ? Remark.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (Code != null ? Code.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ Discount.GetHashCode();
@@ -132,6 +152,8 @@ namespace Cuponico.Ingestor.Host.Partners.Lomadee.Coupons.Tickets
                 hashCode = (hashCode * 397) ^ Vigency.GetHashCode();
                 hashCode = (hashCode * 397) ^ (Link != null ? Link.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ New.GetHashCode();
+                hashCode = (hashCode * 397) ^ IsPercentage.GetHashCode();
+                hashCode = (hashCode * 397) ^ Shipping.GetHashCode();
                 return hashCode;
             }
         }

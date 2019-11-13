@@ -1,4 +1,7 @@
-﻿using Newtonsoft.Json;
+﻿// ReSharper disable ArrangeAccessorOwnerBody
+// ReSharper disable ValueParameterNotUsed
+using Elevar.Utils;
+using Newtonsoft.Json;
 
 namespace Cuponico.Ingestor.Host.Partners.Lomadee.Coupons.Tickets
 {
@@ -9,6 +12,12 @@ namespace Cuponico.Ingestor.Host.Partners.Lomadee.Coupons.Tickets
 
         [JsonProperty("name")]
         public string Name { get; set; }
+
+        public string FriendlyName
+        {
+            get { return Name.ToFriendlyName(); }
+            set { }
+        }
 
         protected bool Equals(LomadeeCategory other)
         {

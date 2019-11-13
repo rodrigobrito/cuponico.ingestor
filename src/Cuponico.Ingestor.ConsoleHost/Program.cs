@@ -10,6 +10,7 @@ namespace Cuponico.Ingestor.Host
     {
         private static void Main()
         {
+            //var couponAvro = AvroSerializer.Create<CouponId>().WriterSchema.ToString();
             Console.WriteLine("Starting...");
 
             var cancelationTokenSource = new CancellationTokenSource();
