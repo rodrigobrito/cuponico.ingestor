@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using Coravel;
-using Cuponico.Ingestor.Host.Partners.Lomadee.Jobs;
+using Cuponico.Ingestor.Host.Jobs;
 using Microsoft.AspNetCore.Hosting;
 
 namespace Cuponico.Ingestor.Host

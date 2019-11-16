@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Text;
 using Elevar.Utils;
 using MongoDB.Bson.Serialization.Attributes;
@@ -25,6 +26,9 @@ namespace Cuponico.Ingestor.Host.Partners.Lomadee.Coupons.Tickets
         public string Code { get; set; }
 
         [JsonProperty("discount")]
+        [BsonIgnore]
+        public string OriginalDiscount { get; set; }
+
         public decimal Discount { get; set; }
 
         [JsonProperty("store")]
@@ -55,8 +59,10 @@ namespace Cuponico.Ingestor.Host.Partners.Lomadee.Coupons.Tickets
             var (description, remark) = ExtractDescriptionAndRemark(Description);
             Description = description;
             Remark = remark;
-            // Update discount
-            Discount = Discount == 0 ? TryGetDiscountFromDescriptionProperty(this) : Discount;
+            // Update discount 
+            var parsed = decimal.TryParse(OriginalDiscount, out var discount);
+            Discount = parsed && discount > 0 ? discount : TryGetDiscountFromDescriptionProperty(this);
+
             // Friendly name
             FriendlyDescription = description.ToFriendlyName();
 

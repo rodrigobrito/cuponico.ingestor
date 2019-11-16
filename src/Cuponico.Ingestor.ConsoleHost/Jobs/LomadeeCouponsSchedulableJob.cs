@@ -1,15 +1,15 @@
-﻿using AutoMapper;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using AutoMapper;
 using Coravel.Invocable;
 using Cuponico.Ingestor.Host.Kafka;
 using Cuponico.Ingestor.Host.Partners.Coupons;
 using Cuponico.Ingestor.Host.Partners.Lomadee.Coupons.Tickets;
 using Elevar.Collections;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace Cuponico.Ingestor.Host.Partners.Lomadee.Jobs
+namespace Cuponico.Ingestor.Host.Jobs
 {
     public class LomadeeCouponsSchedulableJob : IInvocable
     {

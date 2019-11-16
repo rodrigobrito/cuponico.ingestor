@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Coravel.Invocable;
 using Cuponico.Ingestor.Host.Partners.Lomadee.Coupons.Categories;
 
-namespace Cuponico.Ingestor.Host.Partners.Lomadee.Jobs
+namespace Cuponico.Ingestor.Host.Jobs
 {
     public class LomadeeCategoriesSchedulableJob : IInvocable
     {
