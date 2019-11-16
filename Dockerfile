@@ -4,7 +4,7 @@ EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/core/sdk:2.2 AS build
 WORKDIR .
-COPY Ingestor.sln .
+COPY Cuponico.Ingestor.sln .
 COPY ["src//Cuponico.Ingestor.Host//Cuponico.Ingestor.Host.csproj", ".//src//Cuponico.Ingestor.Host//"]
 
 RUN dotnet restore -s https://api.nuget.org/v3/index.json
