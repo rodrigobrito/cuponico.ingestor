@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Coravel.Invocable;
 using Cuponico.Ingestor.Host.Kafka;
 using Cuponico.Ingestor.Host.Partners.Coupons;
 using Cuponico.Ingestor.Host.Partners.Lomadee.Coupons.Tickets;
 using Elevar.Collections;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Cuponico.Ingestor.Host.Jobs
 {
@@ -64,12 +64,18 @@ namespace Cuponico.Ingestor.Host.Jobs
 
             if (couponsCreated.Any())
             {
-                await _mongodbRepository.SaveAsync(couponsCreated);
-                PublishChanges(Events.CouponCreated, couponsCreated);
+                if (!HasDuplicateUrl(couponsCreated))
+                {
+                    await _mongodbRepository.SaveAsync(couponsCreated);
+                    PublishChanges(Events.CouponCreated, couponsCreated);
+                }
             }
 
             if (couponsChanged.Any())
-                await _mongodbRepository.SaveAsync(couponsChanged);
+            {
+                if (!HasDuplicateUrl(couponsChanged))
+                    await _mongodbRepository.SaveAsync(couponsChanged);
+            }
 
             if (couponsCanceled.Any())
                 await _mongodbRepository.DeleteAsync(couponsCanceled.Select(x => x.Id).ToList());
@@ -89,5 +95,12 @@ namespace Cuponico.Ingestor.Host.Jobs
                 //_producer.Send(eventName, batch.ToList(), report => Console.WriteLine(report.ToString()));
             }
         }
+
+        private static bool HasDuplicateUrl(IList<LomadeeCoupon> lomadeeCoupons)
+        {
+            return lomadeeCoupons.GroupBy(created => created.Link.ToString())
+                                 .Select(link => link.Count()).Any(count => count > 2);
+        }
+
     }
 }
