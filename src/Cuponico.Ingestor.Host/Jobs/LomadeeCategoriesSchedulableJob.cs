@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Coravel.Invocable;
-using Cuponico.Ingestor.Host.Partners.Lomadee.Coupons.Categories;
+using Cuponico.Ingestor.Host.Infrastructure.Http.Lomadee.Coupons.Categories;
 
 namespace Cuponico.Ingestor.Host.Jobs
 {

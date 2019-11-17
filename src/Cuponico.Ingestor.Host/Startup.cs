@@ -1,19 +1,18 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Coravel;
-using Cuponico.Ingestor.Host.Health;
+using Cuponico.Ingestor.Host.Domain.Jobs;
+using Cuponico.Ingestor.Host.Infrastructure.Health;
+using Cuponico.Ingestor.Host.Infrastructure.Http.Lomadee;
+using Cuponico.Ingestor.Host.Infrastructure.Http.Lomadee.Coupons.Categories;
+using Cuponico.Ingestor.Host.Infrastructure.Http.Lomadee.Coupons.Stores;
+using Cuponico.Ingestor.Host.Infrastructure.Http.Lomadee.Coupons.Tickets;
+using Cuponico.Ingestor.Host.Infrastructure.Http.Zanox;
+using Cuponico.Ingestor.Host.Infrastructure.Http.Zanox.Media;
+using Cuponico.Ingestor.Host.Infrastructure.Kafka;
+using Cuponico.Ingestor.Host.Infrastructure.Kafka.Coupons;
 using Cuponico.Ingestor.Host.Jobs;
-using Cuponico.Ingestor.Host.Kafka;
-using Cuponico.Ingestor.Host.Partners.Coupons;
-using Cuponico.Ingestor.Host.Partners.Lomadee;
-using Cuponico.Ingestor.Host.Partners.Lomadee.Coupons;
-using Cuponico.Ingestor.Host.Partners.Lomadee.Coupons.Categories;
-using Cuponico.Ingestor.Host.Partners.Lomadee.Coupons.Stores;
-using Cuponico.Ingestor.Host.Partners.Lomadee.Coupons.Tickets;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -25,6 +24,17 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Polly;
 using Polly.Extensions.Http;
+using Polly.Retry;
+using System;
+using System.IO;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
+using Cuponico.Ingestor.Host.Domain.Stores;
+using Cuponico.Ingestor.Host.Domain.Tickets;
+using Cuponico.Ingestor.Host.Infrastructure.MongoDb.Cuponico;
+using Cuponico.Ingestor.Host.Infrastructure.MongoDb.Lomadee;
+using Coupon = Cuponico.Ingestor.Host.Infrastructure.Kafka.Coupons.Coupon;
 
 namespace Cuponico.Ingestor.Host
 {
@@ -55,6 +65,16 @@ namespace Cuponico.Ingestor.Host
                 ResponseWriter = WriteResponse
             });
             app.UseMvc();
+
+            app.UseExceptionHandler(errorApp =>
+            {
+                errorApp.Run(async context =>
+                {
+                    var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
+                    if (exceptionHandlerPathFeature?.Error != null)
+                        Console.WriteLine(exceptionHandlerPathFeature.Error);
+                });
+            });
         }
 
 
@@ -62,12 +82,6 @@ namespace Cuponico.Ingestor.Host
         {
             // Add access to generic IConfigurationRoot
             services.AddSingleton(Configuration);
-
-            // Add AutoMapper
-            services.AddAutoMapper(cfg =>
-            {
-                cfg.AddProfile(typeof(LomadeeCouponProfile));
-            }, AppDomain.CurrentDomain.GetAssemblies());
 
             // Add logging
             services.AddLogging((logging) =>
@@ -84,13 +98,11 @@ namespace Cuponico.Ingestor.Host
             });
 
             services.AddMvc();
+            services.AddScheduler();
 
             services.AddHealthChecks()
                     .AddGcInfoCheck("services");
-
-            // Adding scheduler
-            services.AddScheduler();
-
+            
             // Add Kafka
             services.AddSingleton<KafkaSettings>();
             services.AddSingleton<KafkaProducer<CouponKey, Coupon>>();
@@ -102,33 +114,56 @@ namespace Cuponico.Ingestor.Host
                                                                      TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)) +
                                                                      TimeSpan.FromMilliseconds(jitterer.Next(0, 100)));
 
+            ConfigureLomadee(services, retryPolicy);
+            ConfigureZanox(services, retryPolicy);
+        }
+
+        private void ConfigureZanox(IServiceCollection services, AsyncRetryPolicy<HttpResponseMessage> retryPolicy)
+        {
+            var zanoxSettings = new ZanoxSettings(Configuration);
+            services.AddSingleton(zanoxSettings.Mongo);
+            services.AddSingleton(zanoxSettings.Http);
+
+            // Stores
+            services.AddHttpClient<ZanoxAdmediaHttpRepository>(c => { c.BaseAddress = new Uri(zanoxSettings.Http.BaseUrl); })
+                    .AddPolicyHandler(retryPolicy);
+        }
+
+        private void ConfigureLomadee(IServiceCollection services, AsyncRetryPolicy<HttpResponseMessage> retryPolicy)
+        {
             var lomadeeSettings = new LomadeeSettings(Configuration);
             services.AddSingleton(lomadeeSettings.Mongo);
             services.AddSingleton(lomadeeSettings.Http);
 
-            // Categories
-            services.AddHttpClient<LomadeeCategoryHttpRepository>(c =>
-            {
-                c.BaseAddress = new Uri(lomadeeSettings.Http.Host);
-            }).AddPolicyHandler(retryPolicy);
-            services.AddSingleton<LomadeeCategoryMongoDbRepository>();
-            services.AddTransient<LomadeeCategoriesSchedulableJob>();
 
-            // Stores
-            services.AddHttpClient<LomadeeStoreHttpRepository>(c =>
+            // Add AutoMapper
+            services.AddAutoMapper(cfg =>
             {
-                c.BaseAddress = new Uri(lomadeeSettings.Http.Host);
-            }).AddPolicyHandler(retryPolicy);
-            services.AddSingleton<LomadeeStoreMongoDbRepository>();
-            services.AddTransient<LomadeeStoresSchedulableJob>();
+                cfg.AddProfile(typeof(LomadeeCouponProfile));
+            }, AppDomain.CurrentDomain.GetAssemblies());
+
 
             // Coupons
-            services.AddHttpClient<LomadeeeCouponHttpRepository>(c =>
-            {
-                c.BaseAddress = new Uri(lomadeeSettings.Http.Host);
-            }).AddPolicyHandler(retryPolicy);
+            services.AddHttpClient<LomadeeeCouponHttpRepository>(c => { c.BaseAddress = new Uri(lomadeeSettings.Http.Host); })
+                .AddPolicyHandler(retryPolicy);
             services.AddSingleton<LomadeeCouponMongoDbRepository>();
-            services.AddTransient<LomadeeCouponsSchedulableJob>();
+            services.AddTransient(provider => new CouponsSchedulableJobLomadee(
+                provider.GetService<LomadeeeCouponHttpRepository>(),
+                provider.GetService<LomadeeCouponMongoDbRepository>()));
+
+            // Stores
+            services.AddHttpClient<LomadeeStoreHttpRepository>(c => { c.BaseAddress = new Uri(lomadeeSettings.Http.Host); })
+                    .AddPolicyHandler(retryPolicy);
+            services.AddSingleton<LomadeeStoreMongoDbRepository>();
+            services.AddTransient(provider => new StoresSchedulableJobLomadee(
+                provider.GetService<LomadeeStoreHttpRepository>(),
+                provider.GetService<LomadeeStoreMongoDbRepository>()));
+
+            // Categories
+            services.AddHttpClient<LomadeeCategoryHttpRepository>(c => { c.BaseAddress = new Uri(lomadeeSettings.Http.Host); })
+                    .AddPolicyHandler(retryPolicy);
+            services.AddSingleton<LomadeeCategoryMongoDbRepository>();
+            services.AddTransient<LomadeeCategoriesSchedulableJob>();
         }
 
         public IConfigurationRoot Configuration { get; set; }
