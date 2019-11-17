@@ -9,6 +9,7 @@ namespace Cuponico.Ingestor.Host.Domain.Categories
         public string FriendlyName { get; set; }
         public Uri CategoryUrl { get; set; }
         public int CouponsCount { get; set; }
+        public DateTime ChangedDate { get; set; }
 
         protected bool Equals(Category other)
         {

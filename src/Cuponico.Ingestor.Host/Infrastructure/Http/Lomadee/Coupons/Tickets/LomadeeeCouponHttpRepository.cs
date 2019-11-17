@@ -4,6 +4,7 @@ using Elevar.Collections;
 using Elevar.Utils;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -23,12 +24,18 @@ namespace Cuponico.Ingestor.Host.Infrastructure.Http.Lomadee.Coupons.Tickets
             _mapper = mapper.ThrowIfNull(nameof(mapper));
         }
 
-
         private async Task<IList<LomadeeCoupon>> GetAllLomadeeCouponsAsync()
         {
             var responseString = await _client.GetStringAsync(_lomadeeSettings.GetAllCouponsUri);
 
-            var response = JsonConvert.DeserializeObject<LomadeeCouponResponse>(responseString, _lomadeeSettings.JsonSettings);
+            var response = JsonConvert.DeserializeObject<LomadeeCouponResponse>(responseString,  new JsonSerializerSettings
+            {
+                Culture = new CultureInfo("pt-BR"),
+                MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
+                DateParseHandling = DateParseHandling.DateTime,
+                Error = (se, ev) => { ev.ErrorContext.Handled = true; }
+            });
+
             if (response == null || !response.Coupons.Any())
                 return new PagedList<LomadeeCoupon>();
 

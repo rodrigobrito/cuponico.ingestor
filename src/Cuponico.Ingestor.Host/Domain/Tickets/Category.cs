@@ -4,14 +4,11 @@
     {
         public long Id { get; set; }
         public string Name { get; set; }
-
         public string FriendlyName { get; set; }
-
         protected bool Equals(Category other)
         {
             return Id == other.Id && Name == other.Name && FriendlyName == other.FriendlyName;
         }
-
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
@@ -19,7 +16,6 @@
             if (obj.GetType() != this.GetType()) return false;
             return Equals((Category)obj);
         }
-
         public override int GetHashCode()
         {
             unchecked

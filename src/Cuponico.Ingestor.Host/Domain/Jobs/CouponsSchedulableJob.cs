@@ -33,7 +33,7 @@ namespace Cuponico.Ingestor.Host.Domain.Jobs
             {
                 if (partnerCoupon == null) continue;
 
-                var cuponicoCoupon = cuponicoCoupons?.FirstOrDefault(local => local.Id == partnerCoupon.Id);
+                var cuponicoCoupon = cuponicoCoupons?.FirstOrDefault(local => local.CouponId == partnerCoupon.CouponId);
                 if (cuponicoCoupon == null)
                 {
                     couponsToCreate.Add(partnerCoupon);
@@ -48,7 +48,7 @@ namespace Cuponico.Ingestor.Host.Domain.Jobs
             }
 
             if (cuponicoCoupons != null)
-                couponsToCancel.AddRange(cuponicoCoupons.Where(localCoupon => couponsFromPartner.All(lomadee => lomadee.Id != localCoupon.Id)));
+                couponsToCancel.AddRange(cuponicoCoupons.Where(localCoupon => couponsFromPartner.All(lomadee => lomadee.CouponId != localCoupon.CouponId)));
 
             if (couponsToCreate.Any())
             {
@@ -60,7 +60,7 @@ namespace Cuponico.Ingestor.Host.Domain.Jobs
                 await _cuponicoRepository.SaveAsync(couponsToChange);
 
             if (couponsToCancel.Any())
-                await _cuponicoRepository.DeleteAsync(couponsToCancel.Select(x => x.Id).ToList());
+                await _cuponicoRepository.DeleteAsync(couponsToCancel.Select(x => x.CouponId).ToList());
         }
 
         //private void PublishChanges(string eventName, IList<LomadeeCoupon> lomadeeCoupons)

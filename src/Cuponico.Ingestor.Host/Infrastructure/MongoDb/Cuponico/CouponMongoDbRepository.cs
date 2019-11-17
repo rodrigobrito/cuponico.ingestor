@@ -22,13 +22,13 @@ namespace Cuponico.Ingestor.Host.Infrastructure.MongoDb.Cuponico
                 BsonClassMap.RegisterClassMap<Coupon>(cm =>
                 {
                     cm.AutoMap();
-                    cm.MapIdMember(c => c.Id);
+                    cm.MapIdMember(c => c.CouponId);
                 });
             }
 
             Wrapper = wrapper ?? throw new ArgumentNullException(nameof(wrapper));
-            Wrapper.CreateCollectionIfNotExistsAsync<LomadeeCoupon>(CollectinoName);
-            Wrapper.CreateIndexIfNotExistsAsync<LomadeeCoupon>(CollectinoName, "couponId", null, e => e.Id);
+            Wrapper.CreateCollectionIfNotExistsAsync<Coupon>(CollectinoName);
+            Wrapper.CreateIndexIfNotExistsAsync<Coupon>(CollectinoName, "couponId", null, e => e.CouponId);
         }
 
         public async Task<IList<Coupon>> GetAllAsync()
@@ -39,7 +39,7 @@ namespace Cuponico.Ingestor.Host.Infrastructure.MongoDb.Cuponico
         public async Task SaveAsync(IList<Coupon> coupons)
         {
             if (coupons == null || !coupons.Any()) return;
-            await Wrapper.BulkWriteAsync(CollectinoName, coupons, x => y => x.Id == y.Id);
+            await Wrapper.BulkWriteAsync(CollectinoName, coupons, x => y => x.CouponId == y.CouponId);
         }
 
         public async Task DeleteAsync(IList<long> ids)
@@ -47,7 +47,7 @@ namespace Cuponico.Ingestor.Host.Infrastructure.MongoDb.Cuponico
             foreach (var id in ids)
             {
                 var builder = Builders<Coupon>.Filter;
-                var filter = builder.Eq(c => c.Id, id);
+                var filter = builder.Eq(c => c.CouponId, id);
                 await Wrapper.DeleteOneAsync(CollectinoName, filter);
             }
             throw new NotImplementedException();
