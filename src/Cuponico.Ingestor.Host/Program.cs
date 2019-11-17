@@ -2,7 +2,6 @@
 using System.Threading;
 using Coravel;
 using Cuponico.Ingestor.Host.Domain.Jobs;
-using Cuponico.Ingestor.Host.Jobs;
 using Microsoft.AspNetCore.Hosting;
 
 namespace Cuponico.Ingestor.Host
@@ -26,17 +25,14 @@ namespace Cuponico.Ingestor.Host
             var services = host.Services;
             services.UseScheduler(scheduler =>
             {
-                scheduler.Schedule<CouponsSchedulableJobLomadee>().EverySecond()
+                scheduler.Schedule<CouponsSchedulableJobLomadee>().EveryMinute()
                     .PreventOverlapping(nameof(CouponsSchedulableJobLomadee));
 
                 scheduler.Schedule<StoresSchedulableJobLomadee>().EveryMinute()
                     .PreventOverlapping(nameof(StoresSchedulableJobLomadee));
 
-                //scheduler.OnWorker("Lomadee.Categories.Importer");
-                //scheduler.Schedule<LomadeeCategoriesSchedulableJob>().EveryMinute()
-                //                                                     .PreventOverlapping(nameof(LomadeeCategoriesSchedulableJob));
-
-
+                scheduler.Schedule<CategoriesSchedulableJobLomadee>().EveryMinute()
+                    .PreventOverlapping(nameof(CategoriesSchedulableJobLomadee));
 
 
                 //scheduler.OnWorker("Zanox.Stores.Importer");

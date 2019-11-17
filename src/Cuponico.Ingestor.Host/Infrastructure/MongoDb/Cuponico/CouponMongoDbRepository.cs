@@ -17,11 +17,14 @@ namespace Cuponico.Ingestor.Host.Infrastructure.MongoDb.Cuponico
 
         public CouponMongoDbRepository(IMongoWrapper wrapper)
         {
-            BsonClassMap.RegisterClassMap<Coupon>(cm =>
+            if (!BsonClassMap.IsClassMapRegistered(typeof(Coupon)))
             {
-                cm.AutoMap();
-                cm.MapIdMember(c => c.Id);
-            });
+                BsonClassMap.RegisterClassMap<Coupon>(cm =>
+                {
+                    cm.AutoMap();
+                    cm.MapIdMember(c => c.Id);
+                });
+            }
 
             Wrapper = wrapper ?? throw new ArgumentNullException(nameof(wrapper));
             Wrapper.CreateCollectionIfNotExistsAsync<LomadeeCoupon>(CollectinoName);

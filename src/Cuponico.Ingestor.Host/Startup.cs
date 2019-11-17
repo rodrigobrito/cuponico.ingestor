@@ -10,7 +10,6 @@ using Cuponico.Ingestor.Host.Infrastructure.Http.Zanox;
 using Cuponico.Ingestor.Host.Infrastructure.Http.Zanox.Media;
 using Cuponico.Ingestor.Host.Infrastructure.Kafka;
 using Cuponico.Ingestor.Host.Infrastructure.Kafka.Coupons;
-using Cuponico.Ingestor.Host.Jobs;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -30,9 +29,6 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Cuponico.Ingestor.Host.Domain.Stores;
-using Cuponico.Ingestor.Host.Domain.Tickets;
-using Cuponico.Ingestor.Host.Infrastructure.MongoDb.Cuponico;
 using Cuponico.Ingestor.Host.Infrastructure.MongoDb.Lomadee;
 using Coupon = Cuponico.Ingestor.Host.Infrastructure.Kafka.Coupons.Coupon;
 
@@ -140,6 +136,8 @@ namespace Cuponico.Ingestor.Host
             services.AddAutoMapper(cfg =>
             {
                 cfg.AddProfile(typeof(LomadeeCouponProfile));
+                cfg.AddProfile(typeof(LomadeeStoreProfile));
+                cfg.AddProfile(typeof(LomadeeCategoryProfile));
             }, AppDomain.CurrentDomain.GetAssemblies());
 
 
@@ -163,7 +161,9 @@ namespace Cuponico.Ingestor.Host
             services.AddHttpClient<LomadeeCategoryHttpRepository>(c => { c.BaseAddress = new Uri(lomadeeSettings.Http.Host); })
                     .AddPolicyHandler(retryPolicy);
             services.AddSingleton<LomadeeCategoryMongoDbRepository>();
-            services.AddTransient<LomadeeCategoriesSchedulableJob>();
+            services.AddTransient(provider => new CategoriesSchedulableJobLomadee(
+                provider.GetService<LomadeeCategoryHttpRepository>(),
+                provider.GetService<LomadeeCategoryMongoDbRepository>()));
         }
 
         public IConfigurationRoot Configuration { get; set; }

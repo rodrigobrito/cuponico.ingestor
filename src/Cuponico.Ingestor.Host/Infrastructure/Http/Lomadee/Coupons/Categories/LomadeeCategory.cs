@@ -1,7 +1,4 @@
-﻿// ReSharper disable ArrangeAccessorOwnerBody
-// ReSharper disable ValueParameterNotUsed
-
-using System;
+﻿using System;
 using Elevar.Utils;
 using MongoDB.Bson.Serialization.Attributes;
 using Newtonsoft.Json;
@@ -17,11 +14,8 @@ namespace Cuponico.Ingestor.Host.Infrastructure.Http.Lomadee.Coupons.Categories
         public string Name { get; set; }
         [JsonProperty("link")]
         public Uri Link { get; set; }
-        public string FriendlyName
-        {
-            get { return Name.ToFriendlyName(); }
-            set { }
-        }
+        public string FriendlyName => Name.ToFriendlyName();
+        public int CouponsCount { get; set; }
 
         protected bool Equals(LomadeeCategory other)
         {

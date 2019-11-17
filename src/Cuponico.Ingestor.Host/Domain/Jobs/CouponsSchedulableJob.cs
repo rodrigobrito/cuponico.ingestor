@@ -52,18 +52,12 @@ namespace Cuponico.Ingestor.Host.Domain.Jobs
 
             if (couponsToCreate.Any())
             {
-                if (!HasDuplicateUrl(couponsToCreate))
-                {
-                    await _cuponicoRepository.SaveAsync(couponsToCreate);
-                    //PublishChanges(Events.CouponCreated, couponsCreated);
-                }
+                await _cuponicoRepository.SaveAsync(couponsToCreate);
+                //PublishChanges(Events.CouponCreated, couponsCreated);
             }
 
             if (couponsToChange.Any())
-            {
-                if (!HasDuplicateUrl(couponsToChange))
-                    await _cuponicoRepository.SaveAsync(couponsToChange);
-            }
+                await _cuponicoRepository.SaveAsync(couponsToChange);
 
             if (couponsToCancel.Any())
                 await _cuponicoRepository.DeleteAsync(couponsToCancel.Select(x => x.Id).ToList());
@@ -83,11 +77,5 @@ namespace Cuponico.Ingestor.Host.Domain.Jobs
         //        //_producer.Send(eventName, batch.ToList(), report => Console.WriteLine(report.ToString()));
         //    }
         //}
-
-        private static bool HasDuplicateUrl(IEnumerable<Coupon> lomadeeCoupons)
-        {
-            return lomadeeCoupons.GroupBy(created => created.Link.ToString())
-                                 .Select(link => link.Count()).Any(count => count > 2);
-        }
     }
 }

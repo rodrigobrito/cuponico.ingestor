@@ -17,8 +17,8 @@ namespace Cuponico.Ingestor.Host.Infrastructure.Http.Lomadee.Coupons.Stores
     {
         private readonly HttpClient _client;
         private readonly LomadeeHttpSettings _lomadeeSettings;
-        private readonly ICouponRepository _couponRepository;
         private readonly IMapper _mapper;
+        private readonly ICouponRepository _couponRepository;
 
 
         public LomadeeStoreHttpRepository(LomadeeHttpSettings lomadeeSettings, HttpClient client, IMapper mapper, LomadeeCouponMongoDbRepository couponRepository)

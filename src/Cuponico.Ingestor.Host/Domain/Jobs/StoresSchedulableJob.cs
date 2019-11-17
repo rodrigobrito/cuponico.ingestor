@@ -46,28 +46,16 @@ namespace Cuponico.Ingestor.Host.Domain.Jobs
             }
 
             if (cuponicoStores != null)
-                storesToCancel.AddRange(cuponicoStores.Where(localStore => storesFromPartner.All(lomadee => lomadee.StoreId != localStore.StoreId)));
+                storesToCancel.AddRange(cuponicoStores.Where(localStore => storesFromPartner.All(s => s.StoreId != localStore.StoreId)));
 
             if (storesToCreate.Any())
-            {
-                if (!HasDuplicateUrl(storesToCreate))
-                    await _cuponicoRepository.SaveAsync(storesToCreate);
-            }
+                await _cuponicoRepository.SaveAsync(storesToCreate);
 
             if (storesToChange.Any())
-            {
-                if (!HasDuplicateUrl(storesToChange))
-                    await _cuponicoRepository.SaveAsync(storesToChange);
-            }
+                await _cuponicoRepository.SaveAsync(storesToChange);
 
             if (storesToCancel.Any())
                 await _cuponicoRepository.DeleteAsync(storesToCancel.Select(x => x.StoreId).ToList());
-        }
-
-        private static bool HasDuplicateUrl(IEnumerable<Store> lomadeeCoupons)
-        {
-            return lomadeeCoupons.GroupBy(created => created.StoreUrl.ToString())
-                .Select(link => link.Count()).Any(count => count > 2);
         }
     }
 }
