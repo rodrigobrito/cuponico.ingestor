@@ -35,7 +35,7 @@ namespace Cuponico.Ingestor.Host.Infrastructure.Http.Zanox.Medias
         public async Task<IList<Store>> GetAllAsync()
         {
             var response = await GetAllZanoxMedia();
-            await UpdateProperties(response);
+            UpdateProperties(response);
             return _mapper.Map<IList<Store>>(response.Admedium.Items);
         }
 
@@ -59,7 +59,7 @@ namespace Cuponico.Ingestor.Host.Infrastructure.Http.Zanox.Medias
             return response;
         }
 
-        private async Task UpdateProperties(ZanoxAdmediaResponse media)
+        private void UpdateProperties(ZanoxAdmediaResponse media)
         {
             if (media?.Admedium?.Items != null)
             {
