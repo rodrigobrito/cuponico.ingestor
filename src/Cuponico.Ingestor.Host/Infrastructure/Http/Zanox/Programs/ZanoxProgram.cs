@@ -28,7 +28,7 @@ namespace Cuponico.Ingestor.Host.Infrastructure.Http.Zanox.Programs
         public long Products { get; set; }
 
         [JsonProperty("categories")]
-        public IList<ZanoxCategory> Categories { get; set; } = new List<ZanoxCategory>();
+        public IList<ZanoxCategoryWrapper> Categories { get; set; } = new List<ZanoxCategoryWrapper>();
 
         [JsonProperty("startDate")]
         public DateTime StartDate { get; set; }

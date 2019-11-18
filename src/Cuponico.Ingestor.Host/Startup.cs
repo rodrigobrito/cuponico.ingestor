@@ -133,6 +133,14 @@ namespace Cuponico.Ingestor.Host
             services.AddTransient(provider => new StoresSchedulableJobZanox(
                 provider.GetService<ZanoxStoreHttpRepository>(),
                 provider.GetService<ZanoxStoreMongoDbRepository>()));
+
+            // Categories
+            services.AddSingleton<ZanoxCategoryHttpRepository>();
+
+            services.AddSingleton<ZanoxCategoryMongoDbRepository>();
+            services.AddTransient(provider => new CategoriesSchedulableJobZanox(
+                provider.GetService<ZanoxCategoryHttpRepository>(),
+                provider.GetService<ZanoxCategoryMongoDbRepository>()));
         }
 
         private void ConfigureLomadee(IServiceCollection services, AsyncRetryPolicy<HttpResponseMessage> retryPolicy)

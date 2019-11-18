@@ -38,6 +38,9 @@ namespace Cuponico.Ingestor.Host
                 // Zanox
                 scheduler.Schedule<StoresSchedulableJobZanox>().EveryFifteenMinutes()
                     .PreventOverlapping(nameof(StoresSchedulableJobZanox));
+
+                scheduler.Schedule<CategoriesSchedulableJobZanox>().EveryFifteenMinutes()
+                    .PreventOverlapping(nameof(CategoriesSchedulableJobZanox));
             });
 
             host.Start();

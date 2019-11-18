@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace Cuponico.Ingestor.Host.Infrastructure.Http.Zanox.Programs
 {
@@ -8,6 +9,13 @@ namespace Cuponico.Ingestor.Host.Infrastructure.Http.Zanox.Programs
         public long Id { get; set; }
 
         [JsonProperty("$")]
-        public long Name { get; set; }
+        public string Name { get; set; }
+    }
+
+    public class ZanoxCategoryWrapper
+    {
+        [JsonProperty("category")]
+        [JsonConverter(typeof(SafeCollectionConverter))]
+        public IList<ZanoxCategory> Category { get; set; } = new List<ZanoxCategory>();
     }
 }
