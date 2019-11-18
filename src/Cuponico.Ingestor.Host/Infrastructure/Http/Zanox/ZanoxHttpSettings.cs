@@ -27,7 +27,8 @@ namespace Cuponico.Ingestor.Host.Infrastructure.Http.Zanox
         public string SecretKey { get; private set; }
         public string Region { get; } = "BR";
         public string GetAllCouponsUri => $"{BaseUrl}/incentives?connectId={ConnectId}&region={Region}&incentiveType=coupons";
-        public string GetStartpageMediaUri => $"{BaseUrl}/admedia?connectId={ConnectId}&region={Region}&purpose=startpage";
+        public string GetStoresUri => $"{BaseUrl}/admedia?connectId={ConnectId}&region={Region}&purpose=startpage";
+        public string GetProgramUri(string programId) => $"{BaseUrl}/programs/program/{programId}?connectId={ConnectId}";
         public JsonSerializerSettings JsonSettings => new JsonSerializerSettings
         {
             Culture = new CultureInfo("en-US"),

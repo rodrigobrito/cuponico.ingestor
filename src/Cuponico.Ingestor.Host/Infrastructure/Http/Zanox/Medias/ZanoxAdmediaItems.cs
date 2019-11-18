@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace Cuponico.Ingestor.Host.Infrastructure.Http.Zanox.Media
+namespace Cuponico.Ingestor.Host.Infrastructure.Http.Zanox.Medias
 {
     public class ZanoxAdmediaItems
     {

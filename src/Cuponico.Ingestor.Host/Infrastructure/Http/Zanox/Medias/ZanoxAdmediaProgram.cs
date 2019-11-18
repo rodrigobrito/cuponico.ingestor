@@ -1,7 +1,7 @@
 ﻿using Elevar.Utils;
 using Newtonsoft.Json;
 
-namespace Cuponico.Ingestor.Host.Infrastructure.Http.Zanox.Media
+namespace Cuponico.Ingestor.Host.Infrastructure.Http.Zanox.Medias
 {
     public class ZanoxAdmediaProgram
     {
@@ -11,5 +11,6 @@ namespace Cuponico.Ingestor.Host.Infrastructure.Http.Zanox.Media
         [JsonProperty("$")]
         public string Name { get; set; }
         public string FriendelyName => Name.ToFriendlyName();
+        public string Description { get; internal set; }
     }
 }

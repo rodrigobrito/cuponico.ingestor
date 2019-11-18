@@ -29,14 +29,14 @@ namespace Cuponico.Ingestor.Host
                 scheduler.Schedule<CouponsSchedulableJobLomadee>().EveryMinute()
                     .PreventOverlapping(nameof(CouponsSchedulableJobLomadee));
 
-                scheduler.Schedule<StoresSchedulableJobLomadee>().EveryMinute()
+                scheduler.Schedule<StoresSchedulableJobLomadee>().EveryFifteenMinutes()
                     .PreventOverlapping(nameof(StoresSchedulableJobLomadee));
 
-                scheduler.Schedule<CategoriesSchedulableJobLomadee>().EveryMinute()
+                scheduler.Schedule<CategoriesSchedulableJobLomadee>().EveryFifteenMinutes()
                     .PreventOverlapping(nameof(CategoriesSchedulableJobLomadee));
 
                 // Zanox
-                scheduler.Schedule<StoresSchedulableJobZanox>().EveryMinute()
+                scheduler.Schedule<StoresSchedulableJobZanox>().EveryFifteenMinutes()
                     .PreventOverlapping(nameof(StoresSchedulableJobZanox));
             });
 

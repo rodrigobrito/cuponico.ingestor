@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
 
-namespace Cuponico.Ingestor.Host.Infrastructure.Http.Zanox.Media
+namespace Cuponico.Ingestor.Host.Infrastructure.Http.Zanox.Medias
 {
     public class ZanoxTrackinsLinks
     {

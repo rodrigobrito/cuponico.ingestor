@@ -7,7 +7,6 @@ using Cuponico.Ingestor.Host.Infrastructure.Http.Lomadee.Coupons.Categories;
 using Cuponico.Ingestor.Host.Infrastructure.Http.Lomadee.Coupons.Stores;
 using Cuponico.Ingestor.Host.Infrastructure.Http.Lomadee.Coupons.Tickets;
 using Cuponico.Ingestor.Host.Infrastructure.Http.Zanox;
-using Cuponico.Ingestor.Host.Infrastructure.Http.Zanox.Media;
 using Cuponico.Ingestor.Host.Infrastructure.Kafka;
 using Cuponico.Ingestor.Host.Infrastructure.Kafka.Coupons;
 using Microsoft.AspNetCore.Builder;
@@ -29,6 +28,8 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Cuponico.Ingestor.Host.Infrastructure.Http.Zanox.Medias;
+using Cuponico.Ingestor.Host.Infrastructure.Http.Zanox.Programs;
 using Cuponico.Ingestor.Host.Infrastructure.MongoDb.Lomadee;
 using Cuponico.Ingestor.Host.Infrastructure.MongoDb.Zanox;
 using Coupon = Cuponico.Ingestor.Host.Infrastructure.Kafka.Coupons.Coupon;
@@ -120,6 +121,9 @@ namespace Cuponico.Ingestor.Host
             var zanoxSettings = new ZanoxSettings(Configuration);
             services.AddSingleton(zanoxSettings.Mongo);
             services.AddSingleton(zanoxSettings.Http);
+
+            services.AddHttpClient<ZanoxProgramHttpRepository>(c => { c.BaseAddress = new Uri(zanoxSettings.Http.BaseUrl); })
+                    .AddPolicyHandler(retryPolicy);
 
             // Stores
             services.AddHttpClient<ZanoxStoreHttpRepository>(c => { c.BaseAddress = new Uri(zanoxSettings.Http.BaseUrl); })
