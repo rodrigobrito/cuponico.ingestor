@@ -63,12 +63,12 @@ namespace Cuponico.Ingestor.Host.Infrastructure.Http.Zanox.Medias
         {
             if (media?.Admedium?.Items != null)
             {
-                foreach (var admediumItem in media.Admedium.Items)
+                Parallel.ForEach(media.Admedium.Items, new ParallelOptions { MaxDegreeOfParallelism = 20 }, async admediumItem =>
                 {
                     var response = await _programRepository.GetProgramAsync(admediumItem.Program.Id.ToString());
                     var program = response?.Programs?.FirstOrDefault();
                     if (program != null) admediumItem.Program.Description = program.Description; //program.DescriptionLocal.Replace("<![CDATA[", string.Empty).Replace("]]>", string.Empty);
-                }
+                });
             }
         }
 
