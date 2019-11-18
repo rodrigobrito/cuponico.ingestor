@@ -3,7 +3,7 @@ using Elevar.Infrastructure.MongoDb;
 using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
 
-namespace Cuponico.Ingestor.Host.Infrastructure.Http.Zanox
+namespace Cuponico.Ingestor.Host.Infrastructure.MongoDb.Zanox
 {
     public class ZanoxMongoSettings
     {

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Coravel.Invocable;
 using Cuponico.Ingestor.Host.Domain.Categories;
 
-namespace Cuponico.Ingestor.Host.Jobs
+namespace Cuponico.Ingestor.Host.Domain.Jobs
 {
     public class CategoriesSchedulableJob : IInvocable
     {

@@ -25,6 +25,7 @@ namespace Cuponico.Ingestor.Host
             var services = host.Services;
             services.UseScheduler(scheduler =>
             {
+                // Lomadee
                 scheduler.Schedule<CouponsSchedulableJobLomadee>().EveryMinute()
                     .PreventOverlapping(nameof(CouponsSchedulableJobLomadee));
 
@@ -34,10 +35,9 @@ namespace Cuponico.Ingestor.Host
                 scheduler.Schedule<CategoriesSchedulableJobLomadee>().EveryMinute()
                     .PreventOverlapping(nameof(CategoriesSchedulableJobLomadee));
 
-
-                //scheduler.OnWorker("Zanox.Stores.Importer");
-                //scheduler.Schedule<ZanoxStoresSchedulableJob>().EveryMinute()
-                //                                               .PreventOverlapping(nameof(ZanoxStoresSchedulableJob));
+                // Zanox
+                scheduler.Schedule<StoresSchedulableJobZanox>().EverySecond()
+                    .PreventOverlapping(nameof(StoresSchedulableJobZanox));
             });
 
             host.Start();

@@ -1,4 +1,5 @@
 ﻿using System;
+using Cuponico.Ingestor.Host.Infrastructure.MongoDb.Zanox;
 using Microsoft.Extensions.Configuration;
 
 namespace Cuponico.Ingestor.Host.Infrastructure.Http.Zanox

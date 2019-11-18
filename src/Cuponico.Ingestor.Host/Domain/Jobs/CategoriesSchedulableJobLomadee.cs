@@ -1,5 +1,4 @@
 ﻿using Cuponico.Ingestor.Host.Domain.Categories;
-using Cuponico.Ingestor.Host.Jobs;
 
 namespace Cuponico.Ingestor.Host.Domain.Jobs
 {

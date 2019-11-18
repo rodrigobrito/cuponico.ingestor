@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Elevar.Utils;
+using Newtonsoft.Json;
 
 namespace Cuponico.Ingestor.Host.Infrastructure.Http.Zanox.Media
 {
@@ -9,7 +10,7 @@ namespace Cuponico.Ingestor.Host.Infrastructure.Http.Zanox.Media
 
         [JsonProperty("name")]
         public string Name { get; set; }
-        
+
         [JsonProperty("Adrank")]
         public int Rank { get; set; }
 

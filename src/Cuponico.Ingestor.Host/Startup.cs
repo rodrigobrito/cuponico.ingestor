@@ -30,6 +30,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Cuponico.Ingestor.Host.Infrastructure.MongoDb.Lomadee;
+using Cuponico.Ingestor.Host.Infrastructure.MongoDb.Zanox;
 using Coupon = Cuponico.Ingestor.Host.Infrastructure.Kafka.Coupons.Coupon;
 
 namespace Cuponico.Ingestor.Host
@@ -121,8 +122,13 @@ namespace Cuponico.Ingestor.Host
             services.AddSingleton(zanoxSettings.Http);
 
             // Stores
-            services.AddHttpClient<ZanoxAdmediaHttpRepository>(c => { c.BaseAddress = new Uri(zanoxSettings.Http.BaseUrl); })
+            services.AddHttpClient<ZanoxStoreHttpRepository>(c => { c.BaseAddress = new Uri(zanoxSettings.Http.BaseUrl); })
                     .AddPolicyHandler(retryPolicy);
+
+            services.AddSingleton<ZanoxStoreMongoDbRepository>();
+            services.AddTransient(provider => new StoresSchedulableJobZanox(
+                provider.GetService<ZanoxStoreHttpRepository>(),
+                provider.GetService<ZanoxStoreMongoDbRepository>()));
         }
 
         private void ConfigureLomadee(IServiceCollection services, AsyncRetryPolicy<HttpResponseMessage> retryPolicy)
