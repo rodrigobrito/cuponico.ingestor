@@ -36,7 +36,7 @@ namespace Cuponico.Ingestor.Host
                     .PreventOverlapping(nameof(CategoriesSchedulableJobLomadee));
 
                 // Zanox
-                scheduler.Schedule<StoresSchedulableJobZanox>().EverySecond()
+                scheduler.Schedule<StoresSchedulableJobZanox>().EveryMinute()
                     .PreventOverlapping(nameof(StoresSchedulableJobZanox));
             });
 
