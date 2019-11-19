@@ -32,6 +32,7 @@ namespace Cuponico.Ingestor.Host.Infrastructure.Http.Zanox.Incentives
             var response = await GetAllCouponsAsync();
             var coupons = _mapper.Map<IList<Coupon>>(response.IncentiveItems.Items);
             var stores = await _storeRepository.GetAllAsync();
+            coupons = coupons.Where(coupon => stores.Any(store => store.StoreId == coupon.Store.Id)).ToList();  // Only authorized retailers coupons.
             foreach (var coupon in coupons)
             {
                 if (coupon.Store == null) continue;
