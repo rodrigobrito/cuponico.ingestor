@@ -51,19 +51,22 @@ namespace Cuponico.Ingestor.Host.Domain.Jobs
 
             if (storesToCreate.Any())
             {
-                foreach (var stores in storesToCreate.BatchesOf(50))
+                var baches = storesToCreate.BatchesOf(50);
+                foreach (var stores in baches)
                     await _cuponicoRepository.SaveAsync(stores.ToList());
             }
 
             if (storesToChange.Any())
             {
-                foreach (var stores in storesToChange.BatchesOf(50))
+                var baches = storesToChange.BatchesOf(50);
+                foreach (var stores in baches)
                     await _cuponicoRepository.SaveAsync(stores.ToList());
             }
 
             if (storesToCancel.Any())
             {
-                foreach (var ids in storesToCancel.Select(x => x.StoreId).BatchesOf(50))
+                var baches = storesToCancel.Select(x => x.StoreId).BatchesOf(50);
+                foreach (var ids in baches)
                     await _cuponicoRepository.DeleteAsync(ids.ToList());
             }
         }

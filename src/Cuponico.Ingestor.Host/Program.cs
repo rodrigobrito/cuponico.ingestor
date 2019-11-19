@@ -27,24 +27,24 @@ namespace Cuponico.Ingestor.Host
             services.UseScheduler(scheduler =>
             {
                 // Lomadee
-                scheduler.Schedule<CouponsSchedulableJobLomadee>().EveryFiveMinutes()
-                    .PreventOverlapping(nameof(CouponsSchedulableJobLomadee));
+                //scheduler.Schedule<CouponsSchedulableJobLomadee>().EveryFiveMinutes()
+                //    .PreventOverlapping(nameof(CouponsSchedulableJobLomadee));
 
-                scheduler.Schedule<StoresSchedulableJobLomadee>().EveryFifteenMinutes()
-                    .PreventOverlapping(nameof(StoresSchedulableJobLomadee));
+                //scheduler.Schedule<StoresSchedulableJobLomadee>().EveryFifteenMinutes()
+                //    .PreventOverlapping(nameof(StoresSchedulableJobLomadee));
 
-                scheduler.Schedule<CategoriesSchedulableJobLomadee>().EveryFifteenMinutes()
-                    .PreventOverlapping(nameof(CategoriesSchedulableJobLomadee));
+                //scheduler.Schedule<CategoriesSchedulableJobLomadee>().EveryFifteenMinutes()
+                //    .PreventOverlapping(nameof(CategoriesSchedulableJobLomadee));
 
                 // Zanox
-                scheduler.Schedule<CouponsSchedulableJobZanox>().EveryFiveMinutes()
-                    .PreventOverlapping(nameof(CouponsSchedulableJobZanox));
+                //scheduler.Schedule<CouponsSchedulableJobZanox>().EverySecond()
+                //    .PreventOverlapping(nameof(CouponsSchedulableJobZanox));
 
-                scheduler.Schedule<StoresSchedulableJobZanox>().EveryFifteenMinutes()
+                scheduler.Schedule<StoresSchedulableJobZanox>().EverySecond()
                     .PreventOverlapping(nameof(StoresSchedulableJobZanox));
 
-                scheduler.Schedule<CategoriesSchedulableJobZanox>().EveryFifteenMinutes()
-                    .PreventOverlapping(nameof(CategoriesSchedulableJobZanox));
+                //scheduler.Schedule<CategoriesSchedulableJobZanox>().EveryFifteenMinutes()
+                //    .PreventOverlapping(nameof(CategoriesSchedulableJobZanox));
             });
 
             host.Start();
