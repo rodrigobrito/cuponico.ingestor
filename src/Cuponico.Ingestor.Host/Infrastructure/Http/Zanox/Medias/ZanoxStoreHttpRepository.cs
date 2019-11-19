@@ -5,9 +5,12 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using AutoMapper;
 using Cuponico.Ingestor.Host.Domain.Stores;
+using Cuponico.Ingestor.Host.Domain.Tickets;
 using Cuponico.Ingestor.Host.Infrastructure.Http.Zanox.Programs;
+using Cuponico.Ingestor.Host.Infrastructure.MongoDb.Zanox;
 using Elevar.Utils;
 using Newtonsoft.Json;
+using Store = Cuponico.Ingestor.Host.Domain.Stores.Store;
 
 namespace Cuponico.Ingestor.Host.Infrastructure.Http.Zanox.Medias
 {
@@ -16,14 +19,16 @@ namespace Cuponico.Ingestor.Host.Infrastructure.Http.Zanox.Medias
         private readonly HttpClient _client;
         private readonly ZanoxHttpSettings _zanoxSettings;
         private readonly ZanoxProgramHttpRepository _programRepository;
+        private readonly ICouponRepository _couponRepository;
         private readonly IMapper _mapper;
 
-        public ZanoxStoreHttpRepository(ZanoxHttpSettings zanoxSettings, HttpClient client, IMapper mapper, ZanoxProgramHttpRepository programRepository)
+        public ZanoxStoreHttpRepository(ZanoxHttpSettings zanoxSettings, HttpClient client, IMapper mapper, ZanoxProgramHttpRepository programRepository, ZanoxCouponMongoDbRepository couponRepository)
         {
             _client = client.ThrowIfNull(nameof(client));
             _zanoxSettings = zanoxSettings.ThrowIfNull(nameof(zanoxSettings));
             _mapper = mapper.ThrowIfNull(nameof(mapper));
             _programRepository = programRepository.ThrowIfNull(nameof(programRepository));
+            _couponRepository = couponRepository.ThrowIfNull(nameof(ZanoxCouponMongoDbRepository));
         }
 
         private async Task<ZanoxAdmediaResponse> GetStartPageMediaAsync(int page = 0)
@@ -36,7 +41,13 @@ namespace Cuponico.Ingestor.Host.Infrastructure.Http.Zanox.Medias
         {
             var response = await GetAllZanoxMedia();
             UpdateProperties(response);
-            return _mapper.Map<IList<Store>>(response.Admedium.Items);
+            var stores = _mapper.Map<IList<Store>>(response.Admedium.Items);
+            var coupons = await _couponRepository.GetAllAsync();
+            foreach (var store in stores)
+            {
+                store.CouponsCount = coupons.Count(c => c.Store != null && c.Store.Id == store.StoreId);
+            }
+            return stores;
         }
 
         private async Task<ZanoxAdmediaResponse> GetAllZanoxMedia()

@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Threading;
 using Coravel;
-using Cuponico.Ingestor.Host.Domain.Jobs;
+using Cuponico.Ingestor.Host.Domain.Jobs.Lomadee;
+using Cuponico.Ingestor.Host.Domain.Jobs.Zanox;
 using Microsoft.AspNetCore.Hosting;
 
 namespace Cuponico.Ingestor.Host
@@ -26,7 +27,7 @@ namespace Cuponico.Ingestor.Host
             services.UseScheduler(scheduler =>
             {
                 // Lomadee
-                scheduler.Schedule<CouponsSchedulableJobLomadee>().EveryMinute()
+                scheduler.Schedule<CouponsSchedulableJobLomadee>().EveryFiveMinutes()
                     .PreventOverlapping(nameof(CouponsSchedulableJobLomadee));
 
                 scheduler.Schedule<StoresSchedulableJobLomadee>().EveryFifteenMinutes()
@@ -36,6 +37,9 @@ namespace Cuponico.Ingestor.Host
                     .PreventOverlapping(nameof(CategoriesSchedulableJobLomadee));
 
                 // Zanox
+                scheduler.Schedule<CouponsSchedulableJobZanox>().EveryFiveMinutes()
+                    .PreventOverlapping(nameof(CouponsSchedulableJobZanox));
+
                 scheduler.Schedule<StoresSchedulableJobZanox>().EveryFifteenMinutes()
                     .PreventOverlapping(nameof(StoresSchedulableJobZanox));
 

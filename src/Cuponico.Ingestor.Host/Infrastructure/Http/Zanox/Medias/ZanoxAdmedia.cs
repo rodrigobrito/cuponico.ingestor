@@ -19,11 +19,17 @@ namespace Cuponico.Ingestor.Host.Infrastructure.Http.Zanox.Medias
         [JsonProperty("program")]
         public ZanoxAdmediaProgram Program { get; set; }
 
+        [JsonProperty("category")]
+        public ZanoxAdmediaProgram Category { get; set; }
+
         [JsonProperty("title")]
         public string Title { get; set; }
 
         [JsonProperty("code")]
         public string Code { get; set; }
+
+        [JsonProperty("description")]
+        public string Description { get; set; }
 
         [JsonProperty("trackingLinks")]
         public ZanoxTrackinsLinks Tracking { get; set; }

@@ -1,6 +1,6 @@
 ﻿using Cuponico.Ingestor.Host.Domain.Categories;
 
-namespace Cuponico.Ingestor.Host.Domain.Jobs
+namespace Cuponico.Ingestor.Host.Domain.Jobs.Lomadee
 {
     public class CategoriesSchedulableJobLomadee : CategoriesSchedulableJob
     {

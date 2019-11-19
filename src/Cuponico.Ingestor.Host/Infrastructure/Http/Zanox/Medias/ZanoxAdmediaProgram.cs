@@ -10,7 +10,7 @@ namespace Cuponico.Ingestor.Host.Infrastructure.Http.Zanox.Medias
 
         [JsonProperty("$")]
         public string Name { get; set; }
-        public string FriendelyName => Name.ToFriendlyName();
-        public string Description { get; internal set; }
+        public string FriendlyName => Name.ToFriendlyName();
+        public string Description { get; set; }
     }
 }

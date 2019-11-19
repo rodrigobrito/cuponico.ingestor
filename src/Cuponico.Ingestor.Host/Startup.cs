@@ -28,6 +28,9 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Cuponico.Ingestor.Host.Domain.Jobs.Lomadee;
+using Cuponico.Ingestor.Host.Domain.Jobs.Zanox;
+using Cuponico.Ingestor.Host.Infrastructure.Http.Zanox.Incentives;
 using Cuponico.Ingestor.Host.Infrastructure.Http.Zanox.Medias;
 using Cuponico.Ingestor.Host.Infrastructure.Http.Zanox.Programs;
 using Cuponico.Ingestor.Host.Infrastructure.MongoDb.Lomadee;
@@ -141,6 +144,15 @@ namespace Cuponico.Ingestor.Host
             services.AddTransient(provider => new CategoriesSchedulableJobZanox(
                 provider.GetService<ZanoxCategoryHttpRepository>(),
                 provider.GetService<ZanoxCategoryMongoDbRepository>()));
+
+            // Coupons 
+            services.AddHttpClient<ZanoxCouponRepository>(c => { c.BaseAddress = new Uri(zanoxSettings.Http.BaseUrl); })
+                    .AddPolicyHandler(retryPolicy);
+
+            services.AddSingleton<ZanoxCouponMongoDbRepository>();
+            services.AddTransient(provider => new CouponsSchedulableJobZanox(
+                provider.GetService<ZanoxCouponRepository>(),
+                provider.GetService<ZanoxCouponMongoDbRepository>()));
         }
 
         private void ConfigureLomadee(IServiceCollection services, AsyncRetryPolicy<HttpResponseMessage> retryPolicy)

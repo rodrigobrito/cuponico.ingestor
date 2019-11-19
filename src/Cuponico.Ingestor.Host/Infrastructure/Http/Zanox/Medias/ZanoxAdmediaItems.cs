@@ -6,6 +6,7 @@ namespace Cuponico.Ingestor.Host.Infrastructure.Http.Zanox.Medias
     public class ZanoxAdmediaItems
     {
         [JsonProperty("admediumItem")]
+        [JsonConverter(typeof(SafeCollectionConverter))]
         public IList<ZanoxAdmedia> Items { get; set; } = new List<ZanoxAdmedia>();
     }
 }
