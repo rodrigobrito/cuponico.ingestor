@@ -69,7 +69,9 @@ namespace Cuponico.Ingestor.Host
 
             app.UseExceptionHandler(errorApp =>
             {
+#pragma warning disable 1998
                 errorApp.Run(async context =>
+#pragma warning restore 1998
                 {
                     var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
                     if (exceptionHandlerPathFeature?.Error != null)

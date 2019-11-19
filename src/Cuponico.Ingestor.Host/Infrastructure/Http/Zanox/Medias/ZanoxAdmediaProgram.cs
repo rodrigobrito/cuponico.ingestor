@@ -1,4 +1,5 @@
-﻿using Elevar.Utils;
+﻿using System;
+using Elevar.Utils;
 using Newtonsoft.Json;
 
 namespace Cuponico.Ingestor.Host.Infrastructure.Http.Zanox.Medias
@@ -12,5 +13,7 @@ namespace Cuponico.Ingestor.Host.Infrastructure.Http.Zanox.Medias
         public string Name { get; set; }
         public string FriendlyName => Name.ToFriendlyName();
         public string Description { get; set; }
+        public Uri Uri { get; set; }
+        public Uri ImageUri { get; set; }
     }
 }

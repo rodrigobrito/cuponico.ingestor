@@ -13,7 +13,7 @@ namespace Cuponico.Ingestor.Host.Infrastructure.Http.Zanox.Medias
                 .ForMember(dest => dest.FriendlyName, map => map.MapFrom(source => source.Program.FriendlyName))
                 .ForMember(dest => dest.Description, map => map.MapFrom(source => source.Program.Description))
                 .ForMember(dest => dest.StoreUrl, map => map.MapFrom(source => source.Tracking.Url))
-                .ForMember(dest => dest.ImageUrl, map => map.MapFrom(source => source.Tracking.ImageUrl));
+                .ForMember(dest => dest.ImageUrl, map => map.MapFrom(source => source.Program.ImageUri));
         }
     }
 }

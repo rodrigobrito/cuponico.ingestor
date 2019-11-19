@@ -74,11 +74,21 @@ namespace Cuponico.Ingestor.Host.Infrastructure.Http.Zanox.Medias
         {
             if (media?.Admedium?.Items != null)
             {
-                Parallel.ForEach(media.Admedium.Items, new ParallelOptions { MaxDegreeOfParallelism = 20 }, async admediumItem =>
+                Parallel.ForEach(media.Admedium.Items, new ParallelOptions { MaxDegreeOfParallelism = 20 },  admediumItem =>
                 {
-                    var response = await _programRepository.GetProgramAsync(admediumItem.Program.Id.ToString());
-                    var program = response?.Programs?.FirstOrDefault();
-                    if (program != null) admediumItem.Program.Description = program.Description; //program.DescriptionLocal.Replace("<![CDATA[", string.Empty).Replace("]]>", string.Empty);
+                    try
+                    {
+                        var response = _programRepository.GetProgramAsync(admediumItem.Program.Id.ToString()).ConfigureAwait(false).GetAwaiter().GetResult();
+                        var program = response?.Programs?.FirstOrDefault();
+                        if (program == null) return;
+
+                        admediumItem.Program.Description = program.Description; //program.DescriptionLocal.Replace("<![CDATA[", string.Empty).Replace("]]>", string.Empty);
+                        admediumItem.Program.ImageUri = program.Image;
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.InnerException);
+                    }
                 });
             }
         }
