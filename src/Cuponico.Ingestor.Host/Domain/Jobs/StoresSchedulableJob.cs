@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Elevar.Collections;
 
 namespace Cuponico.Ingestor.Host.Domain.Jobs
 {
@@ -49,13 +50,22 @@ namespace Cuponico.Ingestor.Host.Domain.Jobs
                 storesToCancel.AddRange(cuponicoStores.Where(localStore => storesFromPartner.All(s => s.StoreId != localStore.StoreId)));
 
             if (storesToCreate.Any())
-                await _cuponicoRepository.SaveAsync(storesToCreate);
+            {
+                foreach (var stores in storesToCreate.BatchesOf(50))
+                    await _cuponicoRepository.SaveAsync(stores.ToList());
+            }
 
             if (storesToChange.Any())
-                await _cuponicoRepository.SaveAsync(storesToChange);
+            {
+                foreach (var stores in storesToChange.BatchesOf(50))
+                    await _cuponicoRepository.SaveAsync(stores.ToList());
+            }
 
             if (storesToCancel.Any())
-                await _cuponicoRepository.DeleteAsync(storesToCancel.Select(x => x.StoreId).ToList());
+            {
+                foreach (var ids in storesToCancel.Select(x => x.StoreId).BatchesOf(50))
+                    await _cuponicoRepository.DeleteAsync(ids.ToList());
+            }
         }
     }
 }
