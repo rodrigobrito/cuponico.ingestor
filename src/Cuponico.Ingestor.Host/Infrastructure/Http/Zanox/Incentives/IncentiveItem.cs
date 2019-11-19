@@ -50,5 +50,11 @@ namespace Cuponico.Ingestor.Host.Infrastructure.Http.Zanox.Incentives
 
         [JsonProperty("newCustomerOnly")]
         public bool NewCustomerOnly { get; set; }
+
+        [JsonProperty("total")]
+        public decimal Total { get; set; }
+
+        [JsonProperty("minimumBasketValue")]
+        public decimal MinimumBasketValue { get; set; }
     }
 }

@@ -9,7 +9,16 @@ namespace Cuponico.Ingestor.Host.Infrastructure.Http.Zanox.Medias
     {
         [JsonProperty("trackingLink")]
         public IList<ZanoxTrackingLink> Links { get; set; } = new List<ZanoxTrackingLink>();
-        public Uri Url => Links.FirstOrDefault()?.Uri;
+
+        public Uri Url
+        {
+            get
+            {
+                var uri = Links?.FirstOrDefault()?.Uri?.ToString();
+                return uri == null ? null : new Uri(uri.ToLower().Replace("http://", "https://"));
+            }
+        }
+
         public Uri ImageUrl => Links.FirstOrDefault()?.ImageUri;
     }
 }

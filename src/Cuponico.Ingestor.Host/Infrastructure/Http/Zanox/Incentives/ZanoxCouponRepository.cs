@@ -42,6 +42,8 @@ namespace Cuponico.Ingestor.Host.Infrastructure.Http.Zanox.Incentives
 
                 coupon.Store.ImageUrl = store.ImageUrl;
                 coupon.Store.StoreUrl = store.StoreUrl;
+                if (coupon.Description.Contains(coupon.Remark))
+                    coupon.Remark = string.Empty;
             }
             return coupons;
         }

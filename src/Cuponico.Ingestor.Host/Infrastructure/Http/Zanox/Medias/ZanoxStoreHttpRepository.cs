@@ -83,7 +83,11 @@ namespace Cuponico.Ingestor.Host.Infrastructure.Http.Zanox.Medias
                         if (program == null) return;
 
                         admediumItem.Program.Description = program.Description; //program.DescriptionLocal.Replace("<![CDATA[", string.Empty).Replace("]]>", string.Empty);
-                        admediumItem.Program.ImageUri = program.Image;
+                        if (program.Image != null)
+                        {
+                            var image = program.Image.ToString().ToLower().Replace("http://", "https://");
+                            admediumItem.Program.ImageUri = new Uri(image);
+                        }
                     }
                     catch (Exception ex)
                     {

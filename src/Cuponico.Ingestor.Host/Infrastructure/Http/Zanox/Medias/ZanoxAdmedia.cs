@@ -30,6 +30,9 @@ namespace Cuponico.Ingestor.Host.Infrastructure.Http.Zanox.Medias
 
         [JsonProperty("description")]
         public string Description { get; set; }
+        
+        [JsonProperty("instruction")]
+        public string Instruction { get; set; }
 
         [JsonProperty("trackingLinks")]
         public ZanoxTrackinsLinks Tracking { get; set; }

@@ -23,9 +23,9 @@ namespace Cuponico.Ingestor.Host.Infrastructure.Http.Zanox.Programs
         {
             var categories = new List<Category>();
             var stores = await _storeRepository.GetAllAsync();
-            Parallel.ForEach(stores, new ParallelOptions { MaxDegreeOfParallelism = 20 }, async store =>
+            Parallel.ForEach(stores, new ParallelOptions { MaxDegreeOfParallelism = 20 }, store =>
             {
-                var programRespnse = await _programRepository.GetProgramAsync(store.StoreId.ToString());
+                var programRespnse = _programRepository.GetProgramAsync(store.StoreId.ToString()).ConfigureAwait(false).GetAwaiter().GetResult();
                 var programs = programRespnse?.Programs;
                 if (programs == null) return;
 
