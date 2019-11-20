@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading;
 using Coravel;
-using Cuponico.Ingestor.Host.Domain.Jobs.Lomadee;
-using Cuponico.Ingestor.Host.Domain.Jobs.Zanox;
+using Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Jobs.Lomadee;
+using Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Jobs.Zanox;
 using Microsoft.AspNetCore.Hosting;
 
 namespace Cuponico.Ingestor.Host
@@ -27,24 +27,24 @@ namespace Cuponico.Ingestor.Host
             services.UseScheduler(scheduler =>
             {
                 // Lomadee
-                scheduler.Schedule<CouponsSchedulableJobLomadee>().EveryFiveMinutes()
-                    .PreventOverlapping(nameof(CouponsSchedulableJobLomadee));
+                scheduler.Schedule<AffiliateCouponsSchedulableJobLomadee>().EveryFiveMinutes()
+                    .PreventOverlapping(nameof(AffiliateCouponsSchedulableJobLomadee));
 
-                scheduler.Schedule<StoresSchedulableJobLomadee>().EveryFifteenMinutes()
-                    .PreventOverlapping(nameof(StoresSchedulableJobLomadee));
+                scheduler.Schedule<AffiliateStoresSchedulableJobLomadee>().EveryFifteenMinutes()
+                    .PreventOverlapping(nameof(AffiliateStoresSchedulableJobLomadee));
 
-                scheduler.Schedule<CategoriesSchedulableJobLomadee>().EveryFifteenMinutes()
-                    .PreventOverlapping(nameof(CategoriesSchedulableJobLomadee));
+                scheduler.Schedule<AffiliateCategoriesSchedulableJobLomadee>().EveryFifteenMinutes()
+                    .PreventOverlapping(nameof(AffiliateCategoriesSchedulableJobLomadee));
 
                 // Zanox
-                scheduler.Schedule<CouponsSchedulableJobZanox>().EveryFiveMinutes()
-                    .PreventOverlapping(nameof(CouponsSchedulableJobZanox));
+                scheduler.Schedule<AffiliateCouponsSchedulableJobZanox>().EveryFiveMinutes()
+                    .PreventOverlapping(nameof(AffiliateCouponsSchedulableJobZanox));
 
-                scheduler.Schedule<StoresSchedulableJobZanox>().EveryFifteenMinutes()
-                    .PreventOverlapping(nameof(StoresSchedulableJobZanox));
+                scheduler.Schedule<AffiliateStoresSchedulableJobZanox>().EveryFifteenMinutes()
+                    .PreventOverlapping(nameof(AffiliateStoresSchedulableJobZanox));
 
-                scheduler.Schedule<CategoriesSchedulableJobZanox>().EveryFifteenMinutes()
-                    .PreventOverlapping(nameof(CategoriesSchedulableJobZanox));
+                scheduler.Schedule<AffiliateCategoriesSchedulableJobZanox>().EveryFifteenMinutes()
+                    .PreventOverlapping(nameof(AffiliateCategoriesSchedulableJobZanox));
             });
 
             host.Start();

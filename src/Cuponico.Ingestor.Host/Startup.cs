@@ -1,14 +1,7 @@
 ﻿using AutoMapper;
 using Coravel;
-using Cuponico.Ingestor.Host.Domain.Jobs;
 using Cuponico.Ingestor.Host.Infrastructure.Health;
-using Cuponico.Ingestor.Host.Infrastructure.Http.Lomadee;
-using Cuponico.Ingestor.Host.Infrastructure.Http.Lomadee.Coupons.Categories;
-using Cuponico.Ingestor.Host.Infrastructure.Http.Lomadee.Coupons.Stores;
-using Cuponico.Ingestor.Host.Infrastructure.Http.Lomadee.Coupons.Tickets;
-using Cuponico.Ingestor.Host.Infrastructure.Http.Zanox;
 using Cuponico.Ingestor.Host.Infrastructure.Kafka;
-using Cuponico.Ingestor.Host.Infrastructure.Kafka.Coupons;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -28,14 +21,18 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Cuponico.Ingestor.Host.Domain.Jobs.Lomadee;
-using Cuponico.Ingestor.Host.Domain.Jobs.Zanox;
-using Cuponico.Ingestor.Host.Infrastructure.Http.Zanox.Incentives;
-using Cuponico.Ingestor.Host.Infrastructure.Http.Zanox.Medias;
-using Cuponico.Ingestor.Host.Infrastructure.Http.Zanox.Programs;
-using Cuponico.Ingestor.Host.Infrastructure.MongoDb.Lomadee;
-using Cuponico.Ingestor.Host.Infrastructure.MongoDb.Zanox;
-using Coupon = Cuponico.Ingestor.Host.Infrastructure.Kafka.Coupons.Coupon;
+using Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Jobs.Lomadee;
+using Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Jobs.Zanox;
+using Cuponico.Ingestor.Host.Infrastructure.Http.AffiliatePrograms.Lomadee;
+using Cuponico.Ingestor.Host.Infrastructure.Http.AffiliatePrograms.Lomadee.Coupons.Categories;
+using Cuponico.Ingestor.Host.Infrastructure.Http.AffiliatePrograms.Lomadee.Coupons.Stores;
+using Cuponico.Ingestor.Host.Infrastructure.Http.AffiliatePrograms.Lomadee.Coupons.Tickets;
+using Cuponico.Ingestor.Host.Infrastructure.Http.AffiliatePrograms.Zanox;
+using Cuponico.Ingestor.Host.Infrastructure.Http.AffiliatePrograms.Zanox.Incentives;
+using Cuponico.Ingestor.Host.Infrastructure.Http.AffiliatePrograms.Zanox.Medias;
+using Cuponico.Ingestor.Host.Infrastructure.Http.AffiliatePrograms.Zanox.Programs;
+using Cuponico.Ingestor.Host.Infrastructure.MongoDb.AffiliatePrograms.Lomadee;
+using Cuponico.Ingestor.Host.Infrastructure.MongoDb.AffiliatePrograms.Zanox;
 
 namespace Cuponico.Ingestor.Host
 {
@@ -108,7 +105,7 @@ namespace Cuponico.Ingestor.Host
             
             // Add Kafka
             services.AddSingleton<KafkaSettings>();
-            services.AddSingleton<KafkaProducer<CouponKey, Coupon>>();
+            services.AddSingleton<KafkaBus>();
 
             // Add http policies
             var jitterer = new Random();
@@ -135,15 +132,16 @@ namespace Cuponico.Ingestor.Host
                     .AddPolicyHandler(retryPolicy);
 
             services.AddSingleton<ZanoxStoreMongoDbRepository>();
-            services.AddTransient(provider => new StoresSchedulableJobZanox(
+            services.AddTransient(provider => new AffiliateStoresSchedulableJobZanox(
                 provider.GetService<ZanoxStoreHttpRepository>(),
-                provider.GetService<ZanoxStoreMongoDbRepository>()));
+                provider.GetService<ZanoxStoreMongoDbRepository>(),
+                provider.GetService<KafkaBus>()));
 
             // Categories
             services.AddSingleton<ZanoxCategoryHttpRepository>();
 
             services.AddSingleton<ZanoxCategoryMongoDbRepository>();
-            services.AddTransient(provider => new CategoriesSchedulableJobZanox(
+            services.AddTransient(provider => new AffiliateCategoriesSchedulableJobZanox(
                 provider.GetService<ZanoxCategoryHttpRepository>(),
                 provider.GetService<ZanoxCategoryMongoDbRepository>()));
 
@@ -152,7 +150,7 @@ namespace Cuponico.Ingestor.Host
                     .AddPolicyHandler(retryPolicy);
 
             services.AddSingleton<ZanoxCouponMongoDbRepository>();
-            services.AddTransient(provider => new CouponsSchedulableJobZanox(
+            services.AddTransient(provider => new AffiliateCouponsSchedulableJobZanox(
                 provider.GetService<ZanoxCouponRepository>(),
                 provider.GetService<ZanoxCouponMongoDbRepository>()));
         }
@@ -177,7 +175,7 @@ namespace Cuponico.Ingestor.Host
             services.AddHttpClient<LomadeeeCouponHttpRepository>(c => { c.BaseAddress = new Uri(lomadeeSettings.Http.Host); })
                 .AddPolicyHandler(retryPolicy);
             services.AddSingleton<LomadeeCouponMongoDbRepository>();
-            services.AddTransient(provider => new CouponsSchedulableJobLomadee(
+            services.AddTransient(provider => new AffiliateCouponsSchedulableJobLomadee(
                 provider.GetService<LomadeeeCouponHttpRepository>(),
                 provider.GetService<LomadeeCouponMongoDbRepository>()));
 
@@ -185,15 +183,16 @@ namespace Cuponico.Ingestor.Host
             services.AddHttpClient<LomadeeStoreHttpRepository>(c => { c.BaseAddress = new Uri(lomadeeSettings.Http.Host); })
                     .AddPolicyHandler(retryPolicy);
             services.AddSingleton<LomadeeStoreMongoDbRepository>();
-            services.AddTransient(provider => new StoresSchedulableJobLomadee(
+            services.AddTransient(provider => new AffiliateStoresSchedulableJobLomadee(
                 provider.GetService<LomadeeStoreHttpRepository>(),
-                provider.GetService<LomadeeStoreMongoDbRepository>()));
+                provider.GetService<LomadeeStoreMongoDbRepository>(),
+                provider.GetService<KafkaBus>()));
 
             // Categories
             services.AddHttpClient<LomadeeCategoryHttpRepository>(c => { c.BaseAddress = new Uri(lomadeeSettings.Http.Host); })
                     .AddPolicyHandler(retryPolicy);
             services.AddSingleton<LomadeeCategoryMongoDbRepository>();
-            services.AddTransient(provider => new CategoriesSchedulableJobLomadee(
+            services.AddTransient(provider => new AffiliateCategoriesSchedulableJobLomadee(
                 provider.GetService<LomadeeCategoryHttpRepository>(),
                 provider.GetService<LomadeeCategoryMongoDbRepository>()));
         }

@@ -1,0 +1,19 @@
+﻿using System;
+using Elevar.Utils;
+using Newtonsoft.Json;
+
+namespace Cuponico.Ingestor.Host.Infrastructure.Http.AffiliatePrograms.Zanox.Medias
+{
+    public class ZanoxAdmediaProgram
+    {
+        [JsonProperty("@id")]
+        public long Id { get; set; }
+
+        [JsonProperty("$")]
+        public string Name { get; set; }
+        public string FriendlyName => Name.ToFriendlyName();
+        public string Description { get; set; }
+        public Uri Uri { get; set; }
+        public Uri ImageUri { get; set; }
+    }
+}
