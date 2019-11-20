@@ -31,8 +31,10 @@ namespace Cuponico.Ingestor.Host.Infrastructure.Http.Zanox.Incentives
         {
             var response = await GetAllCouponsAsync();
             var coupons = _mapper.Map<IList<Coupon>>(response.IncentiveItems.Items);
+            
             var stores = await _storeRepository.GetAllAsync();
             coupons = coupons.Where(coupon => stores.Any(store => store.StoreId == coupon.Store.Id)).ToList();  // Only authorized retailers coupons.
+
             foreach (var coupon in coupons)
             {
                 if (coupon.Store == null) continue;
@@ -44,6 +46,13 @@ namespace Cuponico.Ingestor.Host.Infrastructure.Http.Zanox.Incentives
                 coupon.Store.StoreUrl = store.StoreUrl;
                 if (!string.IsNullOrWhiteSpace(coupon.Description) && !string.IsNullOrWhiteSpace(coupon.Remark) && coupon.Description.Contains(coupon.Remark))
                     coupon.Remark = string.Empty;
+
+                if (coupon.Category != null)
+                {
+                    coupon.Category.Id = 117979;
+                    coupon.Category.Name = "Black Friday";
+                    coupon.Category.FriendlyName = "Black Friday".ToFriendlyName();
+                }
             }
             return coupons;
         }
