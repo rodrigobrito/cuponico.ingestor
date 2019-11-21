@@ -16,9 +16,15 @@ namespace Cuponico.Ingestor.Host.Domain.Advertiser.Stores
 
         public bool IsMatchableName(string name)
         {
-            var newName = name.Replace(".com.br", string.Empty)
-                              .Replace(".com", string.Empty);
-            return Name.ComputeLevenshteinDistance(newName) <= GetMaxAcceptableMatchDistance(newName);
+            var matchableName = ReplaceCommonWordsThatBreakTheMatch(name);
+            var localName = ReplaceCommonWordsThatBreakTheMatch(name);
+            return localName.ComputeLevenshteinDistance(matchableName) <= GetMaxAcceptableMatchDistance(matchableName);
+        }
+
+        private string ReplaceCommonWordsThatBreakTheMatch(string name)
+        {
+            return name.Replace(".com.br", string.Empty)
+                       .Replace(".com", string.Empty);
         }
 
         private static int GetMaxAcceptableMatchDistance(string name)

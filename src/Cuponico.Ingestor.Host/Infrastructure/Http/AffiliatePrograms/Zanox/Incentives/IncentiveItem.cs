@@ -56,5 +56,14 @@ namespace Cuponico.Ingestor.Host.Infrastructure.Http.AffiliatePrograms.Zanox.Inc
 
         [JsonProperty("minimumBasketValue")]
         public decimal MinimumBasketValue { get; set; }
+
+        public bool Shipping
+        {
+            get
+            {
+                var des = string.IsNullOrWhiteSpace(CustomerInfo) ? PublisherInfo : CustomerInfo;
+                return !string.IsNullOrWhiteSpace(des) && des.Contains("frete", StringComparison.InvariantCultureIgnoreCase);
+            }
+        }
     }
 }
