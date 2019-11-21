@@ -21,8 +21,10 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Cuponico.Ingestor.Host.Domain.Advertiser.Stores;
 using Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Jobs.Lomadee;
 using Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Jobs.Zanox;
+using Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Stores;
 using Cuponico.Ingestor.Host.Infrastructure.Http.AffiliatePrograms.Lomadee;
 using Cuponico.Ingestor.Host.Infrastructure.Http.AffiliatePrograms.Lomadee.Coupons.Categories;
 using Cuponico.Ingestor.Host.Infrastructure.Http.AffiliatePrograms.Lomadee.Coupons.Stores;
@@ -31,8 +33,14 @@ using Cuponico.Ingestor.Host.Infrastructure.Http.AffiliatePrograms.Zanox;
 using Cuponico.Ingestor.Host.Infrastructure.Http.AffiliatePrograms.Zanox.Incentives;
 using Cuponico.Ingestor.Host.Infrastructure.Http.AffiliatePrograms.Zanox.Medias;
 using Cuponico.Ingestor.Host.Infrastructure.Http.AffiliatePrograms.Zanox.Programs;
+using Cuponico.Ingestor.Host.Infrastructure.MongoDb.Advertiser;
+using Cuponico.Ingestor.Host.Infrastructure.MongoDb.Advertiser.Stores;
+using Cuponico.Ingestor.Host.Infrastructure.MongoDb.AffiliatePrograms.Cuponico;
 using Cuponico.Ingestor.Host.Infrastructure.MongoDb.AffiliatePrograms.Lomadee;
 using Cuponico.Ingestor.Host.Infrastructure.MongoDb.AffiliatePrograms.Zanox;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Serializers;
 
 namespace Cuponico.Ingestor.Host
 {
@@ -102,7 +110,7 @@ namespace Cuponico.Ingestor.Host
 
             services.AddHealthChecks()
                     .AddGcInfoCheck("services");
-            
+
             // Add Kafka
             services.AddSingleton<KafkaSettings>();
             services.AddSingleton<KafkaBus>();
@@ -114,8 +122,12 @@ namespace Cuponico.Ingestor.Host
                                                                      TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)) +
                                                                      TimeSpan.FromMilliseconds(jitterer.Next(0, 100)));
 
+            services.AddSingleton<AdvertiserMongoSettings>();
+
+
             ConfigureLomadee(services, retryPolicy);
             ConfigureZanox(services, retryPolicy);
+            ConfigureAdvertiser(services);
         }
 
         private void ConfigureZanox(IServiceCollection services, AsyncRetryPolicy<HttpResponseMessage> retryPolicy)
@@ -161,7 +173,6 @@ namespace Cuponico.Ingestor.Host
             services.AddSingleton(lomadeeSettings.Mongo);
             services.AddSingleton(lomadeeSettings.Http);
 
-
             // Add AutoMapper
             services.AddAutoMapper(cfg =>
             {
@@ -195,6 +206,17 @@ namespace Cuponico.Ingestor.Host
             services.AddTransient(provider => new AffiliateCategoriesSchedulableJobLomadee(
                 provider.GetService<LomadeeCategoryHttpRepository>(),
                 provider.GetService<LomadeeCategoryMongoDbRepository>()));
+        }
+
+        private void ConfigureAdvertiser(IServiceCollection services)
+        {
+            services.AddSingleton<AdvertiserMongoSettings>();
+            services.AddSingleton<StoreMongoDbRepository>();
+            services.AddSingleton<IStoreRepository>(provider => (StoreMongoDbRepository)provider.GetService(typeof(StoreMongoDbRepository)));
+            services.AddSingleton<AffiliateStoreMatchesMongoDbRepository>();
+            services.AddSingleton<IAffiliateStoreMatchesRepository>(provider => (AffiliateStoreMatchesMongoDbRepository)provider.GetService(typeof(AffiliateStoreMatchesMongoDbRepository)));
+            services.AddSingleton<AffiliateStoreDomainService>();
+            services.AddSingleton<AffiliateStoreKafkaConsumer>();
         }
 
         public IConfigurationRoot Configuration { get; set; }

@@ -9,12 +9,12 @@ using MongoDB.Driver;
 
 namespace Cuponico.Ingestor.Host.Infrastructure.MongoDb.AffiliatePrograms.Cuponico
 {
-    public class StoreMongoDbRepository : IAffiliateStoreRepository
+    public class AffiliateStoreMongoDbRepository : IAffiliateStoreRepository
     {
         protected readonly IMongoWrapper Wrapper;
         private string _collectinoName = "stores";
 
-        public StoreMongoDbRepository(IMongoWrapper wrapper)
+        public AffiliateStoreMongoDbRepository(IMongoWrapper wrapper)
         {
             if (!BsonClassMap.IsClassMapRegistered(typeof(AffiliateStore)))
             {

@@ -9,12 +9,12 @@ using MongoDB.Driver;
 
 namespace Cuponico.Ingestor.Host.Infrastructure.MongoDb.AffiliatePrograms.Cuponico
 {
-    public class CouponMongoDbRepository : IAffiliateCouponRepository
+    public class AffiliateCouponMongoDbRepository : IAffiliateCouponRepository
     {
         protected readonly IMongoWrapper Wrapper;
         private const string CollectinoName = "coupons";
 
-        public CouponMongoDbRepository(IMongoWrapper wrapper)
+        public AffiliateCouponMongoDbRepository(IMongoWrapper wrapper)
         {
             if (!BsonClassMap.IsClassMapRegistered(typeof(AffiliateCoupon)))
             {

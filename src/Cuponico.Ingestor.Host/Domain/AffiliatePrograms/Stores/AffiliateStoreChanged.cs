@@ -5,7 +5,8 @@ namespace Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Stores
 {
     public class AffiliateStoreChanged : DomainEvent<long, AffiliateStore>
     {
-        protected AffiliateStoreChanged(long id, AffiliateStore @event, DateTime createdDate) : base(id, @event, "store.changed", createdDate)
+        private const string AffiliateEventName = "affiliate.store.changed";
+        protected AffiliateStoreChanged(long id, AffiliateStore @event, DateTime createdDate) : base(id, @event, AffiliateEventName, createdDate)
         {
         }
         public static IList<DomainEvent<long, AffiliateStore>> CreateMany(IList<AffiliateStore> stores)
@@ -13,7 +14,7 @@ namespace Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Stores
             var events = new List<DomainEvent<long, AffiliateStore>>();
             foreach (var store in stores)
             {
-                var storeCreated = AffiliateStoreCreated.Create(store.StoreId, store, "store.changed", DateTime.Now);
+                var storeCreated = Create(store.StoreId, store, AffiliateEventName, DateTime.Now);
                 events.Add(storeCreated);
             }
             return events;

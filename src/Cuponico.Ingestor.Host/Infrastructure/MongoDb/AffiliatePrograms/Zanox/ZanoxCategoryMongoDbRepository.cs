@@ -2,7 +2,7 @@
 
 namespace Cuponico.Ingestor.Host.Infrastructure.MongoDb.AffiliatePrograms.Zanox
 {
-    public class ZanoxCategoryMongoDbRepository: CategoryMongoDbRepository
+    public class ZanoxCategoryMongoDbRepository: AffiliateCategoryMongoDbRepository
     {
         public ZanoxCategoryMongoDbRepository(ZanoxMongoSettings mongoSettings) : base(mongoSettings.CreateWrapper())
         {

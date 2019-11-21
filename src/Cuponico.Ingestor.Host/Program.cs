@@ -3,6 +3,7 @@ using System.Threading;
 using Coravel;
 using Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Jobs.Lomadee;
 using Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Jobs.Zanox;
+using Cuponico.Ingestor.Host.Infrastructure.Kafka;
 using Microsoft.AspNetCore.Hosting;
 
 namespace Cuponico.Ingestor.Host
@@ -17,37 +18,40 @@ namespace Cuponico.Ingestor.Host
             var cancelationTokenSource = new CancellationTokenSource();
             var cancelToken = cancelationTokenSource.Token;
 
-            var host = new WebHostBuilder()
-                            .UseIISIntegration()
-                            .UseKestrel()
-                            .UseStartup<Startup>()
-                            .Build();
+            var webServerHost = new WebHostBuilder()
+                                    .UseIISIntegration()
+                                    .UseKestrel()
+                                    .UseStartup<Startup>()
+                                    .Build();
 
-            var services = host.Services;
+            var services = webServerHost.Services;
             services.UseScheduler(scheduler =>
             {
                 // Lomadee
-                scheduler.Schedule<AffiliateCouponsSchedulableJobLomadee>().EveryFiveMinutes()
-                    .PreventOverlapping(nameof(AffiliateCouponsSchedulableJobLomadee));
+                //scheduler.Schedule<AffiliateCouponsSchedulableJobLomadee>().EveryFiveMinutes()
+                //    .PreventOverlapping(nameof(AffiliateCouponsSchedulableJobLomadee));
 
-                scheduler.Schedule<AffiliateStoresSchedulableJobLomadee>().EveryFifteenMinutes()
+                scheduler.Schedule<AffiliateStoresSchedulableJobLomadee>().EveryFiveSeconds()
                     .PreventOverlapping(nameof(AffiliateStoresSchedulableJobLomadee));
 
-                scheduler.Schedule<AffiliateCategoriesSchedulableJobLomadee>().EveryFifteenMinutes()
-                    .PreventOverlapping(nameof(AffiliateCategoriesSchedulableJobLomadee));
+                //scheduler.Schedule<AffiliateCategoriesSchedulableJobLomadee>().EveryFifteenMinutes()
+                //    .PreventOverlapping(nameof(AffiliateCategoriesSchedulableJobLomadee));
 
                 // Zanox
-                scheduler.Schedule<AffiliateCouponsSchedulableJobZanox>().EveryFiveMinutes()
-                    .PreventOverlapping(nameof(AffiliateCouponsSchedulableJobZanox));
+                //scheduler.Schedule<AffiliateCouponsSchedulableJobZanox>().EveryFiveMinutes()
+                //    .PreventOverlapping(nameof(AffiliateCouponsSchedulableJobZanox));
 
-                scheduler.Schedule<AffiliateStoresSchedulableJobZanox>().EveryFifteenMinutes()
+                scheduler.Schedule<AffiliateStoresSchedulableJobZanox>().EveryFiveSeconds()
                     .PreventOverlapping(nameof(AffiliateStoresSchedulableJobZanox));
 
-                scheduler.Schedule<AffiliateCategoriesSchedulableJobZanox>().EveryFifteenMinutes()
-                    .PreventOverlapping(nameof(AffiliateCategoriesSchedulableJobZanox));
+                //scheduler.Schedule<AffiliateCategoriesSchedulableJobZanox>().EveryFifteenMinutes()
+                //    .PreventOverlapping(nameof(AffiliateCategoriesSchedulableJobZanox));
             });
 
-            host.Start();
+            var affiliateStoreConsumer = (AffiliateStoreKafkaConsumer)services.GetService(typeof(AffiliateStoreKafkaConsumer));
+
+            webServerHost.Start();
+            affiliateStoreConsumer.Start(cancelToken);
 
             Console.WriteLine("Started.");
 

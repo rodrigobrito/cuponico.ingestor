@@ -2,7 +2,7 @@
 
 namespace Cuponico.Ingestor.Host.Infrastructure.MongoDb.AffiliatePrograms.Lomadee
 {
-    public class LomadeeCategoryMongoDbRepository : CategoryMongoDbRepository
+    public class LomadeeCategoryMongoDbRepository : AffiliateCategoryMongoDbRepository
     {
         public LomadeeCategoryMongoDbRepository(LomadeeMongoSettings mongoSettings) : base(mongoSettings.CreateWrapper())
         {

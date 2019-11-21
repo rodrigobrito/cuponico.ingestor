@@ -10,12 +10,12 @@ using MongoDB.Driver;
 
 namespace Cuponico.Ingestor.Host.Infrastructure.MongoDb.AffiliatePrograms.Cuponico
 {
-    public class CategoryMongoDbRepository : IAffiliateCategoryRepository
+    public class AffiliateCategoryMongoDbRepository : IAffiliateCategoryRepository
     {
         protected readonly IMongoWrapper Wrapper;
         private string _collectinoName = "categories";
 
-        public CategoryMongoDbRepository(IMongoWrapper wrapper)
+        public AffiliateCategoryMongoDbRepository(IMongoWrapper wrapper)
         {
             if (!BsonClassMap.IsClassMapRegistered(typeof(AffiliateCategory)))
             {

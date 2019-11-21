@@ -10,7 +10,17 @@ namespace Cuponico.Ingestor.Host.Infrastructure.Http.AffiliatePrograms.Zanox.Med
         public long Id { get; set; }
 
         [JsonProperty("$")]
-        public string Name { get; set; }
+        public string OriginalName { get; set; }
+
+        public string Name
+        {
+            get
+            {
+                var originalName = OriginalName;
+                var endName = originalName.Substring(originalName.Length - 2);
+                return endName == "BR" ? originalName.Substring(0, originalName.Length - 2) : originalName;
+            }
+        }
         public string FriendlyName => Name.ToFriendlyName();
         public string Description { get; set; }
         public Uri Uri { get; set; }

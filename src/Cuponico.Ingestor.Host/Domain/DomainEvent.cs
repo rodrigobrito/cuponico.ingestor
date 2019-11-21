@@ -5,10 +5,11 @@ namespace Cuponico.Ingestor.Host.Domain
 {
     public class DomainEvent<TK, T> where TK : struct
     {
-        public TK Id { get; }
-        public DateTime CreatedDate { get; }
-        public T Event { get; }
-        public string EventName { get; }
+        public TK Id { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public T Event { get; set; }
+        public string EventName { get; set; }
+        protected DomainEvent() { }
 
         protected DomainEvent(TK id, T @event, string eventName, DateTime createdDate)
         {
