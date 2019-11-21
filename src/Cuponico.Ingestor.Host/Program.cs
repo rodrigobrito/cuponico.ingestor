@@ -28,24 +28,24 @@ namespace Cuponico.Ingestor.Host
             services.UseScheduler(scheduler =>
             {
                 // Lomadee
-                //scheduler.Schedule<AffiliateCouponsSchedulableJobLomadee>().EveryFiveMinutes()
-                //    .PreventOverlapping(nameof(AffiliateCouponsSchedulableJobLomadee));
+                scheduler.Schedule<AffiliateCouponsSchedulableJobLomadee>().EveryFiveMinutes()
+                    .PreventOverlapping(nameof(AffiliateCouponsSchedulableJobLomadee));
 
-                scheduler.Schedule<AffiliateStoresSchedulableJobLomadee>().EveryFiveSeconds()
+                scheduler.Schedule<AffiliateStoresSchedulableJobLomadee>().EveryFifteenMinutes()
                     .PreventOverlapping(nameof(AffiliateStoresSchedulableJobLomadee));
 
-                //scheduler.Schedule<AffiliateCategoriesSchedulableJobLomadee>().EveryFifteenMinutes()
-                //    .PreventOverlapping(nameof(AffiliateCategoriesSchedulableJobLomadee));
+                scheduler.Schedule<AffiliateCategoriesSchedulableJobLomadee>().EveryFifteenMinutes()
+                    .PreventOverlapping(nameof(AffiliateCategoriesSchedulableJobLomadee));
 
                 // Zanox
-                //scheduler.Schedule<AffiliateCouponsSchedulableJobZanox>().EveryFiveMinutes()
-                //    .PreventOverlapping(nameof(AffiliateCouponsSchedulableJobZanox));
+                scheduler.Schedule<AffiliateCouponsSchedulableJobZanox>().EveryFiveMinutes()
+                    .PreventOverlapping(nameof(AffiliateCouponsSchedulableJobZanox));
 
-                scheduler.Schedule<AffiliateStoresSchedulableJobZanox>().EveryFiveSeconds()
+                scheduler.Schedule<AffiliateStoresSchedulableJobZanox>().EveryFifteenMinutes()
                     .PreventOverlapping(nameof(AffiliateStoresSchedulableJobZanox));
 
-                //scheduler.Schedule<AffiliateCategoriesSchedulableJobZanox>().EveryFifteenMinutes()
-                //    .PreventOverlapping(nameof(AffiliateCategoriesSchedulableJobZanox));
+                scheduler.Schedule<AffiliateCategoriesSchedulableJobZanox>().EveryFifteenMinutes()
+                    .PreventOverlapping(nameof(AffiliateCategoriesSchedulableJobZanox));
             });
 
             var affiliateStoreConsumer = (AffiliateStoreKafkaConsumer)services.GetService(typeof(AffiliateStoreKafkaConsumer));
