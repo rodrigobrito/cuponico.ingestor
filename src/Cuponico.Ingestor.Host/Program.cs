@@ -41,10 +41,10 @@ namespace Cuponico.Ingestor.Host
                 scheduler.Schedule<AffiliateCouponsSchedulableJobZanox>().EveryFiveMinutes()
                     .PreventOverlapping(nameof(AffiliateCouponsSchedulableJobZanox));
 
-                scheduler.Schedule<AffiliateStoresSchedulableJobZanox>().EveryFifteenMinutes()
+                scheduler.Schedule<AffiliateStoresSchedulableJobZanox>().EveryTenMinutes()
                     .PreventOverlapping(nameof(AffiliateStoresSchedulableJobZanox));
 
-                scheduler.Schedule<AffiliateCategoriesSchedulableJobZanox>().EveryFifteenMinutes()
+                scheduler.Schedule<AffiliateCategoriesSchedulableJobZanox>().EveryThirtyMinutes()
                     .PreventOverlapping(nameof(AffiliateCategoriesSchedulableJobZanox));
             });
 
