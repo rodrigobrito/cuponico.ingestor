@@ -5,7 +5,10 @@ namespace Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Stores
 {
     public class AffiliateStoreChanged : DomainEvent<long, AffiliateStore>
     {
-        private const string AffiliateEventName = "affiliate.store.changed";
+        public const string AffiliateEventName = "affiliate.store.changed";
+        public AffiliateStoreChanged()
+        {
+        }
         protected AffiliateStoreChanged(long id, AffiliateStore @event, DateTime createdDate) : base(id, @event, AffiliateEventName, createdDate)
         {
         }

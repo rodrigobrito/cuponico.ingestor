@@ -5,7 +5,11 @@ namespace Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Stores
 {
     public class AffiliateStoreCanceled : DomainEvent<long, AffiliateStore>
     {
-        private const string AffiliateEventName = "affiliate.store.canceled";
+        public const string AffiliateEventName = "affiliate.store.canceled";
+        public AffiliateStoreCanceled()
+        {
+        }
+
         protected AffiliateStoreCanceled(long id, AffiliateStore @event, DateTime createdDate) : base(id, @event, AffiliateEventName, createdDate)
         {
         }

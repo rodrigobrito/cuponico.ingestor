@@ -6,7 +6,6 @@ namespace Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Stores
     public class AffiliateStoreCreated : DomainEvent<long, AffiliateStore>
     {
         public const string AffiliateEventName = "affiliate.store.created";
-
         public AffiliateStoreCreated()
         {
         }

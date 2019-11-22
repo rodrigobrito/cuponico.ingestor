@@ -86,12 +86,6 @@ namespace Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Stores
             await _matchesRepository.SaveAsync(newMatch);
         }
 
-        private int GetMaxAcceptableMatchDistance(string name)
-        {
-            if (name.Length <= 6) return 1;
-            return (name.Length * 1) / 6;
-        }
-
         private static void UpdateStoreProperties(Store store, AffiliateStore affiliateStore, IList<AffiliateStoreMatch> allMatches = null)
         {
             var advertiseId = affiliateStore.GetAdvertiseId();
@@ -106,6 +100,11 @@ namespace Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Stores
                 store.CouponsCount = affiliateStore.CouponsCount;
             else
                 store.CouponsCount = affiliateStore.CouponsCount + allMatches.Count(m => !m.Matched(advertiseId) && m.AdvertiseStoreId == store.StoreId);
+        }
+
+        public async Task CancelUnifiedStore(AffiliateStore affiliateStore)
+        {
+
         }
     }
 }
