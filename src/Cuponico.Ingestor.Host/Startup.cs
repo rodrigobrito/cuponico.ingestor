@@ -21,7 +21,9 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Cuponico.Ingestor.Host.Domain.Advertiser.Categories;
 using Cuponico.Ingestor.Host.Domain.Advertiser.Stores;
+using Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Categories;
 using Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Jobs.Lomadee;
 using Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Jobs.Zanox;
 using Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Stores;
@@ -34,6 +36,7 @@ using Cuponico.Ingestor.Host.Infrastructure.Http.AffiliatePrograms.Zanox.Incenti
 using Cuponico.Ingestor.Host.Infrastructure.Http.AffiliatePrograms.Zanox.Medias;
 using Cuponico.Ingestor.Host.Infrastructure.Http.AffiliatePrograms.Zanox.Programs;
 using Cuponico.Ingestor.Host.Infrastructure.MongoDb.Advertiser;
+using Cuponico.Ingestor.Host.Infrastructure.MongoDb.Advertiser.Categories;
 using Cuponico.Ingestor.Host.Infrastructure.MongoDb.Advertiser.Stores;
 using Cuponico.Ingestor.Host.Infrastructure.MongoDb.AffiliatePrograms.Cuponico;
 using Cuponico.Ingestor.Host.Infrastructure.MongoDb.AffiliatePrograms.Lomadee;
@@ -210,12 +213,20 @@ namespace Cuponico.Ingestor.Host
         private void ConfigureAdvertiser(IServiceCollection services)
         {
             services.AddSingleton<AdvertiserMongoSettings>();
+            // Store
             services.AddSingleton<StoreMongoDbRepository>();
             services.AddSingleton<IStoreRepository>(provider => (StoreMongoDbRepository)provider.GetService(typeof(StoreMongoDbRepository)));
             services.AddSingleton<AffiliateStoreMatchesMongoDbRepository>();
             services.AddSingleton<IAffiliateStoreMatchesRepository>(provider => (AffiliateStoreMatchesMongoDbRepository)provider.GetService(typeof(AffiliateStoreMatchesMongoDbRepository)));
             services.AddSingleton<AffiliateStoreDomainService>();
             services.AddSingleton<AffiliateStoreKafkaConsumer>();
+            // Category
+            services.AddSingleton<CategoryMongoDbRepository>();
+            services.AddSingleton<ICategoryRepository>(provider => (CategoryMongoDbRepository)provider.GetService(typeof(CategoryMongoDbRepository)));
+            services.AddSingleton<AffiliateCategoryMatchesMongoDbRepository>();
+            services.AddSingleton<IAffiliateCategoryMatchesRepository>(provider => (AffiliateCategoryMatchesMongoDbRepository)provider.GetService(typeof(AffiliateCategoryMatchesMongoDbRepository)));
+            services.AddSingleton<AffiliateCategoryDomainService>();
+            services.AddSingleton<AffiliateCategoryKafkaConsumer>();
         }
 
         public IConfigurationRoot Configuration { get; set; }

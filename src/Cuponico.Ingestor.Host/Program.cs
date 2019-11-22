@@ -34,7 +34,7 @@ namespace Cuponico.Ingestor.Host
                 scheduler.Schedule<AffiliateStoresSchedulableJobLomadee>().EveryFifteenMinutes()
                     .PreventOverlapping(nameof(AffiliateStoresSchedulableJobLomadee));
 
-                scheduler.Schedule<AffiliateCategoriesSchedulableJobLomadee>().EverySecond()
+                scheduler.Schedule<AffiliateCategoriesSchedulableJobLomadee>().EveryFifteenMinutes()
                     .PreventOverlapping(nameof(AffiliateCategoriesSchedulableJobLomadee));
 
                 // Zanox
@@ -49,9 +49,11 @@ namespace Cuponico.Ingestor.Host
             });
 
             var affiliateStoreConsumer = (AffiliateStoreKafkaConsumer)services.GetService(typeof(AffiliateStoreKafkaConsumer));
+            var affiliateCategoryConsumer = (AffiliateCategoryKafkaConsumer)services.GetService(typeof(AffiliateCategoryKafkaConsumer));
 
             webServerHost.Start();
             affiliateStoreConsumer.Start(cancelToken);
+            affiliateCategoryConsumer.Start(cancelToken);
 
             Console.WriteLine("Started.");
 
