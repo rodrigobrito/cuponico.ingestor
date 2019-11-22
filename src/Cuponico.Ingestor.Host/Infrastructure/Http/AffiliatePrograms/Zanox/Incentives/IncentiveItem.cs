@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Cuponico.Ingestor.Host.Infrastructure.Http.AffiliatePrograms.Zanox.Medias;
 using Newtonsoft.Json;
 
@@ -65,5 +66,7 @@ namespace Cuponico.Ingestor.Host.Infrastructure.Http.AffiliatePrograms.Zanox.Inc
                 return !string.IsNullOrWhiteSpace(des) && des.Contains("frete", StringComparison.InvariantCultureIgnoreCase);
             }
         }
+
+        public string Caption => string.IsNullOrWhiteSpace(Admedia.Items.FirstOrDefault()?.Description) ? Name : Admedia.Items.FirstOrDefault()?.Description;
     }
 }
