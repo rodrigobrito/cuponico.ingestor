@@ -38,9 +38,6 @@ using Cuponico.Ingestor.Host.Infrastructure.MongoDb.Advertiser.Stores;
 using Cuponico.Ingestor.Host.Infrastructure.MongoDb.AffiliatePrograms.Cuponico;
 using Cuponico.Ingestor.Host.Infrastructure.MongoDb.AffiliatePrograms.Lomadee;
 using Cuponico.Ingestor.Host.Infrastructure.MongoDb.AffiliatePrograms.Zanox;
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization;
-using MongoDB.Bson.Serialization.Serializers;
 
 namespace Cuponico.Ingestor.Host
 {
@@ -155,7 +152,8 @@ namespace Cuponico.Ingestor.Host
             services.AddSingleton<ZanoxCategoryMongoDbRepository>();
             services.AddTransient(provider => new AffiliateCategoriesSchedulableJobZanox(
                 provider.GetService<ZanoxCategoryHttpRepository>(),
-                provider.GetService<ZanoxCategoryMongoDbRepository>()));
+                provider.GetService<ZanoxCategoryMongoDbRepository>(),
+                provider.GetService<KafkaBus>()));
 
             // Coupons 
             services.AddHttpClient<ZanoxCouponRepository>(c => { c.BaseAddress = new Uri(zanoxSettings.Http.BaseUrl); })
@@ -205,7 +203,8 @@ namespace Cuponico.Ingestor.Host
             services.AddSingleton<LomadeeCategoryMongoDbRepository>();
             services.AddTransient(provider => new AffiliateCategoriesSchedulableJobLomadee(
                 provider.GetService<LomadeeCategoryHttpRepository>(),
-                provider.GetService<LomadeeCategoryMongoDbRepository>()));
+                provider.GetService<LomadeeCategoryMongoDbRepository>(),
+                provider.GetService<KafkaBus>()));
         }
 
         private void ConfigureAdvertiser(IServiceCollection services)

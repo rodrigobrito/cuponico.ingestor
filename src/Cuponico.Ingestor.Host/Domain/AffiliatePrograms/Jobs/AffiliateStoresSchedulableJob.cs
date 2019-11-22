@@ -82,8 +82,8 @@ namespace Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Jobs
                 {
                     var stores = bach.ToList();
                     await _cuponicoRepository.DeleteAsync(stores.Select(x => x.StoreId).ToList());
-                    var changedStores = AffiliateStoreCanceled.CreateMany(stores);
-                    await _publisher.PublishAsync(changedStores);
+                    var canceledStores = AffiliateStoreCanceled.CreateMany(stores);
+                    await _publisher.PublishAsync(canceledStores);
                 }
             }
         }
