@@ -18,7 +18,10 @@ namespace Cuponico.Ingestor.Host.Domain.Advertiser.Stores
         {
             var matchableName = ReplaceCommonWordsThatBreakTheMatch(name);
             var localName = ReplaceCommonWordsThatBreakTheMatch(Name);
-            return localName.ComputeLevenshteinDistance(matchableName) <= GetMaxAcceptableMatchDistance(matchableName);
+            var distance = localName.ComputeLevenshteinDistance(matchableName);
+            var acceptableDistance = GetMaxAcceptableMatchDistance(matchableName);
+            var isMatchable = distance <= acceptableDistance;
+            return isMatchable;
         }
 
         private string ReplaceCommonWordsThatBreakTheMatch(string name)

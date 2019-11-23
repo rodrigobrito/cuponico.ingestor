@@ -7,6 +7,7 @@ using AutoMapper;
 using Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Stores;
 using Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Tickets;
 using Cuponico.Ingestor.Host.Infrastructure.MongoDb.AffiliatePrograms.Zanox;
+using Cuponico.Ingestor.Host.Infrastructure.Settings.Zanox;
 using Elevar.Utils;
 using Newtonsoft.Json;
 

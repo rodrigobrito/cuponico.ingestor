@@ -1,15 +1,14 @@
 ﻿using System;
-using Cuponico.Ingestor.Host.Infrastructure.MongoDb.AffiliatePrograms.Lomadee;
 using Microsoft.Extensions.Configuration;
 
-namespace Cuponico.Ingestor.Host.Infrastructure.Http.AffiliatePrograms.Lomadee
+namespace Cuponico.Ingestor.Host.Infrastructure.Settings.Lomadee
 {
     public class LomadeeSettings
     {
         public LomadeeSettings(IConfigurationRoot configuration)
         {
             var config = configuration ?? throw new ArgumentNullException(nameof(configuration));
-            var section = config.GetSection(nameof(Lomadee)) ?? throw new ArgumentNullException(nameof(LomadeeSettings), "Lomadee section is not defined in configuration file.");
+            var section = config.GetSection(nameof(Infrastructure.Http.AffiliatePrograms.Lomadee)) ?? throw new ArgumentNullException(nameof(LomadeeSettings), "Lomadee section is not defined in configuration file.");
 
             var httpSection = section.GetSection(nameof(Http));
             Http = new LomadeeHttpSettings(httpSection);

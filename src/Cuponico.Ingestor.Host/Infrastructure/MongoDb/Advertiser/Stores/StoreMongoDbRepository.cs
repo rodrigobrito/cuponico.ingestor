@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Cuponico.Ingestor.Host.Infrastructure.Settings.Advertiser;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Serializers;
 

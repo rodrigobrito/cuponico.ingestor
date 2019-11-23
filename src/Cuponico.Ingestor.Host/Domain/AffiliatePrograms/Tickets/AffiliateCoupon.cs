@@ -18,7 +18,7 @@ namespace Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Tickets
         public bool New { get; set; }
         public bool IsPercentage { get; set; }
         public bool Shipping { get; set; }
-        public DateTime ChangedDate { get; set; } = DateTime.Now.ToUniversalTime();
+        public DateTime ChangedDate { get; set; } = DateTime.UtcNow;
         protected bool Equals(AffiliateCoupon other)
         {
             return CouponId == other.CouponId &&

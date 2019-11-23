@@ -3,7 +3,7 @@ using System.Globalization;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
-namespace Cuponico.Ingestor.Host.Infrastructure.Http.AffiliatePrograms.Lomadee
+namespace Cuponico.Ingestor.Host.Infrastructure.Settings.Lomadee
 {
     public class LomadeeHttpSettings
     {

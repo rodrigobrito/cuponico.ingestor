@@ -10,7 +10,7 @@ namespace Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Categories
         public string FriendlyName { get; set; }
         public Uri CategoryUrl { get; set; }
         public int CouponsCount { get; set; }
-        public DateTime ChangedDate { get; set; } = DateTime.Now.ToUniversalTime();
+        public DateTime ChangedDate { get; set; } = DateTime.UtcNow;
 
         protected bool Equals(AffiliateCategory other)
         {

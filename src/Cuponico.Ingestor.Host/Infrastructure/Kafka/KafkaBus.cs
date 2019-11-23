@@ -4,18 +4,22 @@ using System.Linq;
 using System.Threading.Tasks;
 using Confluent.Kafka;
 using Cuponico.Ingestor.Host.Domain;
+using Cuponico.Ingestor.Host.Domain.General.Events;
+using Cuponico.Ingestor.Host.Infrastructure.Settings;
+using Elevar.Utils;
 using Newtonsoft.Json;
 
 namespace Cuponico.Ingestor.Host.Infrastructure.Kafka
 {
-    public class KafkaBus: IPublisher
+    public class KafkaBus : IPublisher
     {
         private readonly IProducer<string, string> _producer;
+        private readonly IFailedEventRepository _failedEventsEventRepository;
 
-        public KafkaBus(KafkaSettings settings)
+        public KafkaBus(KafkaSettings settings, IFailedEventRepository failedEventsEventRepository)
         {
-            if (settings == null)
-                throw new ArgumentNullException(nameof(settings));
+            settings.ThrowIfNull(nameof(settings));
+            _failedEventsEventRepository = failedEventsEventRepository.ThrowIfNull(nameof(failedEventsEventRepository));
 
             var config = new ProducerConfig
             {
@@ -32,7 +36,7 @@ namespace Cuponico.Ingestor.Host.Infrastructure.Kafka
             _producer = new ProducerBuilder<string, string>(config).Build();
         }
 
-        public async Task PublishAsync<TK, T>(DomainEvent<TK, T> domainEvent) where TK: struct
+        public async Task PublishAsync<TK, T>(DomainEvent<TK, T> domainEvent) where TK : struct
         {
             if (domainEvent == null)
                 throw new ArgumentNullException(nameof(domainEvent));
@@ -65,6 +69,12 @@ namespace Cuponico.Ingestor.Host.Infrastructure.Kafka
                 {
                     if (deliveryReport.Error.Code != ErrorCode.NoError)
                     {
+                        _failedEventsEventRepository.SaveAsync(new FailedEvent
+                        {
+                            EventId = deliveryReport.Message.Key,
+                            Content = deliveryReport.Message.Value,
+                            EventName = deliveryReport.Topic
+                        }).ConfigureAwait(false).GetAwaiter().GetResult();
                         Console.WriteLine($"Failed to deliver message: {deliveryReport.Error.Reason}");
                     }
                     else

@@ -12,7 +12,7 @@ namespace Cuponico.Ingestor.Host.Infrastructure.MongoDb.AffiliatePrograms.Cuponi
     public class AffiliateCouponMongoDbRepository : IAffiliateCouponRepository
     {
         protected readonly IMongoWrapper Wrapper;
-        private const string CollectinoName = "coupons";
+        private const string CollectinoName = "affiliate.coupons";
 
         public AffiliateCouponMongoDbRepository(IMongoWrapper wrapper)
         {

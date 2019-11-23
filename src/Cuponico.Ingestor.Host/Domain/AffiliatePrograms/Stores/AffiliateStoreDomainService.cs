@@ -99,7 +99,7 @@ namespace Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Stores
             if (allMatches == null || !allMatches.Any())
                 store.CouponsCount = affiliateStore.CouponsCount;
             else
-                store.CouponsCount = allMatches.Count(m => m.AdvertiseStoreId == store.StoreId);
+                store.CouponsCount = allMatches.Where(m => m.AdvertiseStoreId == store.StoreId).Sum(m => m.CouponsCount);
         }
 
         public async Task CancelUnifiedStore(AffiliateStore affiliateStore)

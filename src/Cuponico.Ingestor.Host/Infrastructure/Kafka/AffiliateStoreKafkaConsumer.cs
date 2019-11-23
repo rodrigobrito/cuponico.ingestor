@@ -1,20 +1,23 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Confluent.Kafka;
+﻿using Confluent.Kafka;
 using Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Stores;
 using Elevar.Utils;
 using Newtonsoft.Json;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Cuponico.Ingestor.Host.Domain;
+using Cuponico.Ingestor.Host.Infrastructure.Settings;
 
 namespace Cuponico.Ingestor.Host.Infrastructure.Kafka
 {
     public class AffiliateStoreKafkaConsumer
     {
-        private readonly AffiliateStoreDomainService _domainService;
         private readonly ConsumerConfig _config;
+        private readonly AffiliateStoreDomainService _domainService;
         public AffiliateStoreKafkaConsumer(KafkaSettings settings, AffiliateStoreDomainService domainService)
         {
             _domainService = domainService.ThrowIfNull(nameof(domainService));
+
             settings.ThrowIfNull(nameof(settings));
 
             _config = new ConsumerConfig
@@ -22,10 +25,11 @@ namespace Cuponico.Ingestor.Host.Infrastructure.Kafka
                 BootstrapServers = settings.BootstrapServers,
                 SaslMechanism = SaslMechanism.Plain,
                 SecurityProtocol = SecurityProtocol.SaslSsl,
+                HeartbeatIntervalMs = 3000,
                 SaslUsername = settings.Username,
                 SaslPassword = settings.Password,
-                ClientId = "cuponico.ingestor",
-                GroupId = "cuponico.processor",
+                ClientId = settings.ClientId,
+                GroupId = settings.GroupId,
                 AutoOffsetReset = AutoOffsetReset.Earliest,
                 EnableAutoCommit = false
             };
@@ -44,7 +48,7 @@ namespace Cuponico.Ingestor.Host.Infrastructure.Kafka
             {
                 using (var consumer = new ConsumerBuilder<string, string>(_config).Build())
                 {
-                    consumer.Subscribe(AffiliateStoreCreated.AffiliateEventName);
+                    consumer.Subscribe(CuponicoEvents.AffiliateStoreCreated);
                     while (true)
                     {
                         try
@@ -55,7 +59,6 @@ namespace Cuponico.Ingestor.Host.Infrastructure.Kafka
 
                             var affiliateStoreCreated = JsonConvert.DeserializeObject<AffiliateStoreCreated>(msg.Value);
                             _domainService.ProcessUnifiedStore(affiliateStoreCreated.Event).ConfigureAwait(false).GetAwaiter().GetResult();
-
                             consumer.Commit();
                         }
                         catch (ConsumeException e)
@@ -86,7 +89,7 @@ namespace Cuponico.Ingestor.Host.Infrastructure.Kafka
             {
                 using (var consumer = new ConsumerBuilder<string, string>(_config).Build())
                 {
-                    consumer.Subscribe(AffiliateStoreChanged.AffiliateEventName);
+                    consumer.Subscribe(CuponicoEvents.AffiliateStoreChanged);
                     while (true)
                     {
                         try
@@ -128,7 +131,7 @@ namespace Cuponico.Ingestor.Host.Infrastructure.Kafka
             {
                 using (var consumer = new ConsumerBuilder<string, string>(_config).Build())
                 {
-                    consumer.Subscribe(AffiliateStoreCanceled.AffiliateEventName);
+                    consumer.Subscribe(CuponicoEvents.AffiliateStoreCanceled);
                     while (true)
                     {
                         try

@@ -5,12 +5,11 @@ namespace Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Categories
 {
     public class AffiliateCategoryCanceled : DomainEvent<long, AffiliateCategory>
     {
-        public const string AffiliateEventName = "affiliate.category.canceled";
         public AffiliateCategoryCanceled()
         {
         }
 
-        protected AffiliateCategoryCanceled(long id, AffiliateCategory @event, DateTime createdDate) : base(id, @event, AffiliateEventName, createdDate)
+        protected AffiliateCategoryCanceled(long id, AffiliateCategory @event, DateTime createdDate) : base(id, @event, CuponicoEvents.AffiliateCategoryCanceled, createdDate)
         {
         }
 
@@ -19,7 +18,7 @@ namespace Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Categories
             var events = new List<DomainEvent<long, AffiliateCategory>>();
             foreach (var category in categories)
             {
-                var categoryCreated = Create(category.CategoryId, category, AffiliateEventName, DateTime.Now);
+                var categoryCreated = Create(category.CategoryId, category, CuponicoEvents.AffiliateCategoryCanceled, DateTime.Now);
                 events.Add(categoryCreated);
             }
             return events;

@@ -27,20 +27,23 @@ using Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Categories;
 using Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Jobs.Lomadee;
 using Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Jobs.Zanox;
 using Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Stores;
-using Cuponico.Ingestor.Host.Infrastructure.Http.AffiliatePrograms.Lomadee;
+using Cuponico.Ingestor.Host.Domain.General.Events;
 using Cuponico.Ingestor.Host.Infrastructure.Http.AffiliatePrograms.Lomadee.Coupons.Categories;
 using Cuponico.Ingestor.Host.Infrastructure.Http.AffiliatePrograms.Lomadee.Coupons.Stores;
 using Cuponico.Ingestor.Host.Infrastructure.Http.AffiliatePrograms.Lomadee.Coupons.Tickets;
-using Cuponico.Ingestor.Host.Infrastructure.Http.AffiliatePrograms.Zanox;
 using Cuponico.Ingestor.Host.Infrastructure.Http.AffiliatePrograms.Zanox.Incentives;
 using Cuponico.Ingestor.Host.Infrastructure.Http.AffiliatePrograms.Zanox.Medias;
 using Cuponico.Ingestor.Host.Infrastructure.Http.AffiliatePrograms.Zanox.Programs;
-using Cuponico.Ingestor.Host.Infrastructure.MongoDb.Advertiser;
 using Cuponico.Ingestor.Host.Infrastructure.MongoDb.Advertiser.Categories;
+using Cuponico.Ingestor.Host.Infrastructure.MongoDb.Advertiser.General;
 using Cuponico.Ingestor.Host.Infrastructure.MongoDb.Advertiser.Stores;
 using Cuponico.Ingestor.Host.Infrastructure.MongoDb.AffiliatePrograms.Cuponico;
 using Cuponico.Ingestor.Host.Infrastructure.MongoDb.AffiliatePrograms.Lomadee;
 using Cuponico.Ingestor.Host.Infrastructure.MongoDb.AffiliatePrograms.Zanox;
+using Cuponico.Ingestor.Host.Infrastructure.Settings;
+using Cuponico.Ingestor.Host.Infrastructure.Settings.Advertiser;
+using Cuponico.Ingestor.Host.Infrastructure.Settings.Lomadee;
+using Cuponico.Ingestor.Host.Infrastructure.Settings.Zanox;
 
 namespace Cuponico.Ingestor.Host
 {
@@ -121,8 +124,6 @@ namespace Cuponico.Ingestor.Host
                                                   .WaitAndRetryAsync(5, retryAttempt =>
                                                                      TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)) +
                                                                      TimeSpan.FromMilliseconds(jitterer.Next(0, 100)));
-
-            services.AddSingleton<AdvertiserMongoSettings>();
 
 
             ConfigureLomadee(services, retryPolicy);
@@ -212,7 +213,12 @@ namespace Cuponico.Ingestor.Host
 
         private void ConfigureAdvertiser(IServiceCollection services)
         {
-            services.AddSingleton<AdvertiserMongoSettings>();
+            var advertiserSettings = new AdvertiserSettings(Configuration);
+            services.AddSingleton(advertiserSettings.Mongo);
+            
+            services.AddSingleton<FailedEventsToSubmitMongoDbRepository>();
+            services.AddSingleton<IFailedEventRepository>((p) => (FailedEventsToSubmitMongoDbRepository)p.GetService(typeof(FailedEventsToSubmitMongoDbRepository)));
+
             // Store
             services.AddSingleton<StoreMongoDbRepository>();
             services.AddSingleton<IStoreRepository>(provider => (StoreMongoDbRepository)provider.GetService(typeof(StoreMongoDbRepository)));

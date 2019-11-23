@@ -3,7 +3,7 @@ using System.Globalization;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
-namespace Cuponico.Ingestor.Host.Infrastructure.Http.AffiliatePrograms.Zanox
+namespace Cuponico.Ingestor.Host.Infrastructure.Settings.Zanox
 {
     public class ZanoxHttpSettings
     {

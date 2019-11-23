@@ -3,7 +3,7 @@ using Elevar.Infrastructure.MongoDb;
 using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
 
-namespace Cuponico.Ingestor.Host.Infrastructure.MongoDb.AffiliatePrograms.Lomadee
+namespace Cuponico.Ingestor.Host.Infrastructure.Settings.Lomadee
 {
     public class LomadeeMongoSettings
     {

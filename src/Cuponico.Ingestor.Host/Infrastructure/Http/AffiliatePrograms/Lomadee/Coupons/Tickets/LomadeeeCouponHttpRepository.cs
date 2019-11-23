@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using AutoMapper;
 using Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Tickets;
+using Cuponico.Ingestor.Host.Infrastructure.Settings.Lomadee;
 using Elevar.Collections;
 using Elevar.Utils;
 using Newtonsoft.Json;

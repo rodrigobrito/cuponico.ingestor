@@ -12,7 +12,7 @@ namespace Cuponico.Ingestor.Host.Infrastructure.MongoDb.AffiliatePrograms.Cuponi
     public class AffiliateStoreMongoDbRepository : IAffiliateStoreRepository
     {
         protected readonly IMongoWrapper Wrapper;
-        private string _collectinoName = "stores";
+        private const string CollectinoName = "affiliate.stores";
 
         public AffiliateStoreMongoDbRepository(IMongoWrapper wrapper)
         {
@@ -27,18 +27,18 @@ namespace Cuponico.Ingestor.Host.Infrastructure.MongoDb.AffiliatePrograms.Cuponi
 
             Wrapper = wrapper ?? throw new ArgumentNullException(nameof(wrapper));
 
-            Wrapper.CreateCollectionIfNotExistsAsync<AffiliateStore>(_collectinoName);
+            Wrapper.CreateCollectionIfNotExistsAsync<AffiliateStore>(CollectinoName);
         }
 
         public async Task<IList<AffiliateStore>> GetAllAsync()
         {
-            return await Wrapper.FindAllAsync<AffiliateStore>(_collectinoName);
+            return await Wrapper.FindAllAsync<AffiliateStore>(CollectinoName);
         }
 
         public async Task SaveAsync(IList<AffiliateStore> stores)
         {
             if (stores == null || !stores.Any()) return;
-            await Wrapper.BulkWriteAsync(_collectinoName, stores, x => y => x.StoreId == y.StoreId);
+            await Wrapper.BulkWriteAsync(CollectinoName, stores, x => y => x.StoreId == y.StoreId);
         }
 
         public async Task DeleteAsync(IList<long> ids)
@@ -47,7 +47,7 @@ namespace Cuponico.Ingestor.Host.Infrastructure.MongoDb.AffiliatePrograms.Cuponi
             {
                 var builder = Builders<AffiliateStore>.Filter;
                 var filter = builder.Eq(c => c.StoreId, id);
-                await Wrapper.DeleteOneAsync(_collectinoName, filter);
+                await Wrapper.DeleteOneAsync(CollectinoName, filter);
             }
         }
     }

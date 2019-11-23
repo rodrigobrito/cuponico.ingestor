@@ -3,16 +3,15 @@ using Elevar.Infrastructure.MongoDb;
 using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
 
-namespace Cuponico.Ingestor.Host.Infrastructure.MongoDb.Advertiser
+namespace Cuponico.Ingestor.Host.Infrastructure.Settings.Zanox
 {
-    public class AdvertiserMongoSettings
+    public class ZanoxMongoSettings
     {
         private readonly IConfigurationSection _section;
 
-        public AdvertiserMongoSettings(IConfigurationRoot config)
+        public ZanoxMongoSettings(IConfigurationSection section)
         {
-            var section = config.GetSection(nameof(Advertiser)) ?? throw new ArgumentNullException(nameof(config), "Advertiser settings section is not defined in configuration file.");
-            _section = section.GetSection("Mongo");
+            _section = section ?? throw new ArgumentNullException(nameof(section));
         }
 
         public string ConnectionString => _section.GetValue<string>("ConnectionString");

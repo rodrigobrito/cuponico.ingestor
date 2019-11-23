@@ -1,5 +1,4 @@
 ﻿using Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Stores;
-using Cuponico.Ingestor.Host.Infrastructure.MongoDb.Advertiser;
 using Elevar.Infrastructure.MongoDb;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
@@ -8,7 +7,7 @@ using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using MongoDB.Bson.Serialization.Conventions;
+using Cuponico.Ingestor.Host.Infrastructure.Settings.Advertiser;
 
 namespace Cuponico.Ingestor.Host.Infrastructure.MongoDb.AffiliatePrograms.Cuponico
 {

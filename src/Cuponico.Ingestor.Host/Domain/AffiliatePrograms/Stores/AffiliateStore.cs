@@ -12,7 +12,7 @@ namespace Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Stores
         public Uri ImageUrl { get; set; }
         public Uri StoreUrl { get; set; }
         public int CouponsCount { get; set; }
-        public DateTime ChangedDate { get; set; } = DateTime.Now.ToUniversalTime();
+        public DateTime ChangedDate { get; set; } = DateTime.UtcNow;
 
         protected bool Equals(AffiliateStore other)
         {

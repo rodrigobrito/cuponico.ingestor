@@ -1,5 +1,6 @@
 ﻿using System.Net.Http;
 using System.Threading.Tasks;
+using Cuponico.Ingestor.Host.Infrastructure.Settings.Zanox;
 using Elevar.Utils;
 using Newtonsoft.Json;
 

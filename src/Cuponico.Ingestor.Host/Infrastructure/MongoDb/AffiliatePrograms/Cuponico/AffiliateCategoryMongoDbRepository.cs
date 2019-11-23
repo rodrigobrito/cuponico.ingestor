@@ -1,19 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Categories;
+﻿using Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Categories;
 using Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Stores;
 using Elevar.Infrastructure.MongoDb;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Cuponico.Ingestor.Host.Infrastructure.MongoDb.AffiliatePrograms.Cuponico
 {
     public class AffiliateCategoryMongoDbRepository : IAffiliateCategoryRepository
     {
+        private const string CollectinoName = "affiliate.categories";
         protected readonly IMongoWrapper Wrapper;
-        private string _collectinoName = "categories";
 
         public AffiliateCategoryMongoDbRepository(IMongoWrapper wrapper)
         {
@@ -28,19 +28,19 @@ namespace Cuponico.Ingestor.Host.Infrastructure.MongoDb.AffiliatePrograms.Cuponi
 
             Wrapper = wrapper ?? throw new ArgumentNullException(nameof(wrapper));
 
-            Wrapper.CreateCollectionIfNotExistsAsync<AffiliateStore>(_collectinoName);
-            Wrapper.CreateIndexIfNotExistsAsync<AffiliateStore>(_collectinoName, "categoryId", null, e => e.StoreId);
+            Wrapper.CreateCollectionIfNotExistsAsync<AffiliateStore>(CollectinoName);
+            Wrapper.CreateIndexIfNotExistsAsync<AffiliateStore>(CollectinoName, "categoryId", null, e => e.StoreId);
         }
 
         public async Task<IList<AffiliateCategory>> GetAllAsync()
         {
-            return await Wrapper.FindAllAsync<AffiliateCategory>(_collectinoName);
+            return await Wrapper.FindAllAsync<AffiliateCategory>(CollectinoName);
         }
 
         public async Task SaveAsync(IList<AffiliateCategory> stores)
         {
             if (stores == null || !stores.Any()) return;
-            await Wrapper.BulkWriteAsync(_collectinoName, stores, x => y => x.CategoryId == y.CategoryId);
+            await Wrapper.BulkWriteAsync(CollectinoName, stores, x => y => x.CategoryId == y.CategoryId);
         }
 
         public async Task DeleteAsync(IList<long> ids)
@@ -49,7 +49,7 @@ namespace Cuponico.Ingestor.Host.Infrastructure.MongoDb.AffiliatePrograms.Cuponi
             {
                 var builder = Builders<AffiliateCategory>.Filter;
                 var filter = builder.Eq(c => c.CategoryId, id);
-                await Wrapper.DeleteOneAsync(_collectinoName, filter);
+                await Wrapper.DeleteOneAsync(CollectinoName, filter);
             }
         }
     }

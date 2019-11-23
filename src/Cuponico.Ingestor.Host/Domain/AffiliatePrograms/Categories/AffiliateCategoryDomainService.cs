@@ -97,7 +97,7 @@ namespace Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Categories
             if (allMatches == null || !allMatches.Any())
                 category.CouponsCount = affiliateCategory.CouponsCount;
             else
-                category.CouponsCount = allMatches.Count(m => m.AdvertiseCategoryId == category.CategoryId);
+                category.CouponsCount = allMatches.Where(m => m.AdvertiseCategoryId == category.CategoryId).Sum(m => m.CouponsCount);
         }
 
         public async Task CancelUnifiedCategory(AffiliateCategory affiliateCategory)

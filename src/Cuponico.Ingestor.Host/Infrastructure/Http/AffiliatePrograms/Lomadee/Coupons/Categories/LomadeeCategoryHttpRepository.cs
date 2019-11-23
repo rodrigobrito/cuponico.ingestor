@@ -6,6 +6,7 @@ using AutoMapper;
 using Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Categories;
 using Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Tickets;
 using Cuponico.Ingestor.Host.Infrastructure.MongoDb.AffiliatePrograms.Lomadee;
+using Cuponico.Ingestor.Host.Infrastructure.Settings.Lomadee;
 using Elevar.Utils;
 using Newtonsoft.Json;
 using AffiliateCategory = Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Categories.AffiliateCategory;

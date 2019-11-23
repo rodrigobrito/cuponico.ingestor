@@ -2,7 +2,9 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Confluent.Kafka;
+using Cuponico.Ingestor.Host.Domain;
 using Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Categories;
+using Cuponico.Ingestor.Host.Infrastructure.Settings;
 using Elevar.Utils;
 using Newtonsoft.Json;
 
@@ -24,8 +26,8 @@ namespace Cuponico.Ingestor.Host.Infrastructure.Kafka
                 SecurityProtocol = SecurityProtocol.SaslSsl,
                 SaslUsername = settings.Username,
                 SaslPassword = settings.Password,
-                ClientId = "cuponico.ingestor",
-                GroupId = "cuponico.processor",
+                ClientId = settings.ClientId,
+                GroupId = settings.GroupId,
                 AutoOffsetReset = AutoOffsetReset.Earliest,
                 EnableAutoCommit = false
             };
@@ -44,7 +46,7 @@ namespace Cuponico.Ingestor.Host.Infrastructure.Kafka
             {
                 using (var consumer = new ConsumerBuilder<string, string>(_config).Build())
                 {
-                    consumer.Subscribe(AffiliateCategoryCreated.AffiliateEventName);
+                    consumer.Subscribe(CuponicoEvents.AffiliateCategoryCreated);
                     while (true)
                     {
                         try
@@ -86,7 +88,7 @@ namespace Cuponico.Ingestor.Host.Infrastructure.Kafka
             {
                 using (var consumer = new ConsumerBuilder<string, string>(_config).Build())
                 {
-                    consumer.Subscribe(AffiliateCategoryChanged.AffiliateEventName);
+                    consumer.Subscribe(CuponicoEvents.AffiliateCategoryChanged);
                     while (true)
                     {
                         try
@@ -128,7 +130,7 @@ namespace Cuponico.Ingestor.Host.Infrastructure.Kafka
             {
                 using (var consumer = new ConsumerBuilder<string, string>(_config).Build())
                 {
-                    consumer.Subscribe(AffiliateCategoryCanceled.AffiliateEventName);
+                    consumer.Subscribe(CuponicoEvents.AffiliateCategoryCanceled);
                     while (true)
                     {
                         try

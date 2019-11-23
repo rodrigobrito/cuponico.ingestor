@@ -3,13 +3,13 @@ using Elevar.Infrastructure.MongoDb;
 using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
 
-namespace Cuponico.Ingestor.Host.Infrastructure.MongoDb.AffiliatePrograms.Zanox
+namespace Cuponico.Ingestor.Host.Infrastructure.Settings.Advertiser
 {
-    public class ZanoxMongoSettings
+    public class AdvertiserMongoSettings
     {
         private readonly IConfigurationSection _section;
 
-        public ZanoxMongoSettings(IConfigurationSection section)
+        public AdvertiserMongoSettings(IConfigurationSection section)
         {
             _section = section ?? throw new ArgumentNullException(nameof(section));
         }
