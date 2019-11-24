@@ -25,6 +25,24 @@ namespace Cuponico.Ingestor.Host.Infrastructure.MongoDb.Advertiser.Coupons
             Wrapper = settings.CreateWrapper();
             Wrapper.CreateCollectionIfNotExistsAsync<Coupon>(CollectinoName);
 
+            if (!BsonClassMap.IsClassMapRegistered(typeof(Store)))
+            {
+                BsonClassMap.RegisterClassMap<Store>(cm =>
+                {
+                    cm.AutoMap();
+                    cm.MapMember(c => c.Id).SetSerializer(new GuidSerializer(BsonType.String));
+                });
+            }
+
+            if (!BsonClassMap.IsClassMapRegistered(typeof(Category)))
+            {
+                BsonClassMap.RegisterClassMap<Category>(cm =>
+                {
+                    cm.AutoMap();
+                    cm.MapMember(c => c.Id).SetSerializer(new GuidSerializer(BsonType.String));
+                });
+            }
+
             if (!BsonClassMap.IsClassMapRegistered(typeof(Coupon)))
             {
                 BsonClassMap.RegisterClassMap<Coupon>(cm =>
