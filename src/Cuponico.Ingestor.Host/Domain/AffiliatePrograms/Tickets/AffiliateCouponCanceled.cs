@@ -9,7 +9,7 @@ namespace Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Tickets
         {
         }
 
-        protected AffiliateCouponCanceled(long id, AffiliateCoupon @event, DateTime createdDate) : base(id, @event, CuponicoEvents.AffiliateCategoryCanceled, createdDate)
+        protected AffiliateCouponCanceled(long id, AffiliateCoupon @event, DateTime createdDate) : base(id, @event, CuponicoEvents.AffiliateCouponCanceled, createdDate)
         {
         }
 
@@ -18,7 +18,7 @@ namespace Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Tickets
             var events = new List<DomainEvent<long, AffiliateCoupon>>();
             foreach (var coupon in coupons)
             {
-                var storeCreated = Create(coupon.CouponId, coupon, CuponicoEvents.AffiliateCategoryCanceled, DateTime.Now);
+                var storeCreated = Create(coupon.CouponId, coupon, CuponicoEvents.AffiliateCouponCanceled, DateTime.Now);
                 events.Add(storeCreated);
             }
             return events;

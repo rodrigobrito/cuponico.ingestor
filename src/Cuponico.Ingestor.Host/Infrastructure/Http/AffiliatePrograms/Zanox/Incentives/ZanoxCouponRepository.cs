@@ -45,15 +45,12 @@ namespace Cuponico.Ingestor.Host.Infrastructure.Http.AffiliatePrograms.Zanox.Inc
 
                 coupon.Store.ImageUrl = store.ImageUrl;
                 coupon.Store.StoreUrl = store.StoreUrl;
-                if (!string.IsNullOrWhiteSpace(coupon.Description) && !string.IsNullOrWhiteSpace(coupon.Remark) && coupon.Description.Contains(coupon.Remark))
-                    coupon.Remark = string.Empty;
-
-                if (coupon.Category != null)
+                coupon.Category = new AffiliateCategory
                 {
-                    coupon.Category.Id = 117979;
-                    coupon.Category.Name = "Black Friday";
-                    coupon.Category.FriendlyName = "Black Friday".ToFriendlyName();
-                }
+                    Id = 117979,
+                    Name = "Black Friday",
+                    FriendlyName = "Black Friday".ToFriendlyName()
+                };
             }
             return coupons;
         }

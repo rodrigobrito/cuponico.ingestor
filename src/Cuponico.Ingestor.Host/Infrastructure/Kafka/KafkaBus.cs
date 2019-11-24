@@ -69,12 +69,12 @@ namespace Cuponico.Ingestor.Host.Infrastructure.Kafka
                 {
                     if (deliveryReport.Error.Code != ErrorCode.NoError)
                     {
-                        _failedEventsEventRepository.SaveAsync(new FailedEvent
-                        {
-                            EventId = deliveryReport.Message.Key,
-                            Content = deliveryReport.Message.Value,
-                            EventName = deliveryReport.Topic
-                        }).ConfigureAwait(false).GetAwaiter().GetResult();
+                        //_failedEventsEventRepository.SaveAsync(new FailedEvent
+                        //{
+                        //    EventId = deliveryReport.Message.Key,
+                        //    Content = deliveryReport.Message.Value,
+                        //    EventName = deliveryReport.Topic
+                        //}).ConfigureAwait(false).GetAwaiter().GetResult();
                         Console.WriteLine($"Failed to deliver message: {deliveryReport.Error.Reason}");
                     }
                     else

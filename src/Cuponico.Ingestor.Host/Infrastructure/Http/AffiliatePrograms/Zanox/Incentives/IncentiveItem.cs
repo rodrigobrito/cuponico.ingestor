@@ -68,5 +68,27 @@ namespace Cuponico.Ingestor.Host.Infrastructure.Http.AffiliatePrograms.Zanox.Inc
         }
 
         public string Caption => string.IsNullOrWhiteSpace(Admedia.Items.FirstOrDefault()?.Description) ? Name : Admedia.Items.FirstOrDefault()?.Description;
+
+        public string Instruction => Admedia.Items.FirstOrDefault()?.Instruction;
+
+        public string Remark
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(Instruction))
+                    return string.Empty;
+
+                var remark = Caption.Contains(Instruction) ? Restrictions : Instruction;
+                if (!string.IsNullOrWhiteSpace(Caption) &&
+                    !string.IsNullOrWhiteSpace(remark) &&
+                    Caption.Contains(remark))
+                {
+                    return string.Empty;
+                }
+                return remark;
+            }
+        }
+
+        public DateTime Validity => EndDate.Year == DateTime.MinValue.Year ? DateTime.UtcNow.AddDays(30) : EndDate.ToUniversalTime();
     }
 }

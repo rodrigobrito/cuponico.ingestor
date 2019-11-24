@@ -45,6 +45,7 @@ using Cuponico.Ingestor.Host.Infrastructure.MongoDb.AffiliatePrograms.Lomadee;
 using Cuponico.Ingestor.Host.Infrastructure.MongoDb.AffiliatePrograms.Zanox;
 using Cuponico.Ingestor.Host.Infrastructure.Settings;
 using Cuponico.Ingestor.Host.Infrastructure.Settings.Advertiser;
+using Cuponico.Ingestor.Host.Infrastructure.Settings.Log;
 using Cuponico.Ingestor.Host.Infrastructure.Settings.Lomadee;
 using Cuponico.Ingestor.Host.Infrastructure.Settings.Zanox;
 
@@ -103,6 +104,8 @@ namespace Cuponico.Ingestor.Host
                 logging.AddConfiguration(Configuration.GetSection("Logging"));
                 logging.AddConsole();
             });
+            var logSettings = new LogSettings(Configuration);
+            services.AddSingleton(logSettings.Mongo);
 
             // Health checks
             services.AddRouting(options =>
