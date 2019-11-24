@@ -1,5 +1,4 @@
 ﻿using Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Categories;
-using Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Stores;
 using Elevar.Infrastructure.MongoDb;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
@@ -28,8 +27,8 @@ namespace Cuponico.Ingestor.Host.Infrastructure.MongoDb.AffiliatePrograms.Cuponi
 
             Wrapper = wrapper ?? throw new ArgumentNullException(nameof(wrapper));
 
-            Wrapper.CreateCollectionIfNotExistsAsync<AffiliateStore>(CollectinoName);
-            Wrapper.CreateIndexIfNotExistsAsync<AffiliateStore>(CollectinoName, "categoryId", null, e => e.StoreId);
+            Wrapper.CreateCollectionIfNotExistsAsync<AffiliateCategory>(CollectinoName);
+            Wrapper.CreateIndexIfNotExistsAsync<AffiliateCategory>(CollectinoName, "categoryId", null, e => e.CategoryId);
         }
 
         public async Task<IList<AffiliateCategory>> GetAllAsync()

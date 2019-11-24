@@ -26,8 +26,8 @@ namespace Cuponico.Ingestor.Host.Infrastructure.MongoDb.AffiliatePrograms.Cuponi
             }
 
             Wrapper = wrapper ?? throw new ArgumentNullException(nameof(wrapper));
-
             Wrapper.CreateCollectionIfNotExistsAsync<AffiliateStore>(CollectinoName);
+            Wrapper.CreateIndexIfNotExistsAsync<AffiliateStore>(CollectinoName, "couponId", null, e => e.StoreId);
         }
 
         public async Task<IList<AffiliateStore>> GetAllAsync()
