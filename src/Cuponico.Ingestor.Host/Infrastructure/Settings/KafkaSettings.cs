@@ -2,6 +2,7 @@
 using Cuponico.Ingestor.Host.Domain;
 using Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Categories;
 using Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Stores;
+using Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Tickets;
 using Microsoft.Extensions.Configuration;
 
 namespace Cuponico.Ingestor.Host.Infrastructure.Settings
@@ -36,6 +37,9 @@ namespace Cuponico.Ingestor.Host.Infrastructure.Settings
             CuponicoEvents.AffiliateCategoryCreated = topics.GetValue<string>(nameof(AffiliateCategoryCreated));
             CuponicoEvents.AffiliateCategoryChanged = topics.GetValue<string>(nameof(AffiliateCategoryChanged));
             CuponicoEvents.AffiliateCategoryCanceled = topics.GetValue<string>(nameof(AffiliateStoreCanceled));
+            CuponicoEvents.AffiliateCouponCreated = topics.GetValue<string>(nameof(AffiliateCouponCreated));
+            CuponicoEvents.AffiliateCouponChanged = topics.GetValue<string>(nameof(AffiliateCouponChanged));
+            CuponicoEvents.AffiliateCouponCanceled = topics.GetValue<string>(nameof(AffiliateCouponCanceled));
         }
 
         public string BootstrapServers { get; }

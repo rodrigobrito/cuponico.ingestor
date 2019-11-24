@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Coravel.Invocable;
 using Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Tickets;
+using Elevar.Collections;
 
 namespace Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Jobs
 {
@@ -11,12 +12,13 @@ namespace Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Jobs
     {
         private readonly IAffiliateCouponRepository _repositoryFromPartner;
         private readonly IAffiliateCouponRepository _cuponicoRepository;
-        //private readonly KafkaProducer<CouponKey, Coupon> _producer;
+        private readonly IPublisher _publisher;
 
-        public AffiliateCouponsSchedulableJob(IAffiliateCouponRepository repositoryFromPartner, IAffiliateCouponRepository cuponicoRepository)
+        public AffiliateCouponsSchedulableJob(IAffiliateCouponRepository repositoryFromPartner, IAffiliateCouponRepository cuponicoRepository, IPublisher publisher)
         {
             _repositoryFromPartner = repositoryFromPartner ?? throw new ArgumentNullException(nameof(repositoryFromPartner));
             _cuponicoRepository = cuponicoRepository ?? throw new ArgumentNullException(nameof(cuponicoRepository));
+            _publisher = publisher ?? throw new ArgumentNullException(nameof(publisher));
         }
 
         public async Task Invoke()
@@ -52,30 +54,39 @@ namespace Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Jobs
 
             if (couponsToCreate.Any())
             {
-                await _cuponicoRepository.SaveAsync(couponsToCreate);
-                //PublishChanges(Events.CouponCreated, couponsCreated);
+                var baches = couponsToCreate.BatchesOf(50);
+                foreach (var bach in baches)
+                {
+                    var coupons = bach.ToList();
+                    await _cuponicoRepository.SaveAsync(coupons);
+                    var createdCoupons = AffiliateCouponCreated.CreateMany(coupons);
+                    await _publisher.PublishAsync(createdCoupons);
+                }
             }
 
             if (couponsToChange.Any())
-                await _cuponicoRepository.SaveAsync(couponsToChange);
+            {
+                var baches = couponsToChange.BatchesOf(50);
+                foreach (var bach in baches)
+                {
+                    var coupons = bach.ToList();
+                    await _cuponicoRepository.SaveAsync(coupons);
+                    var changedCoupons = AffiliateCouponChanged.CreateMany(coupons);
+                    await _publisher.PublishAsync(changedCoupons);
+                }
+            }
 
             if (couponsToCancel.Any())
-                await _cuponicoRepository.DeleteAsync(couponsToCancel.Select(x => x.CouponId).ToList());
+            {
+                var baches = couponsToCancel.BatchesOf(50);
+                foreach (var bach in baches)
+                {
+                    var coupons = bach.ToList();
+                    await _cuponicoRepository.DeleteAsync(coupons.Select(x => x.CouponId).ToList());
+                    var canceledStores = AffiliateCouponCanceled.CreateMany(coupons);
+                    await _publisher.PublishAsync(canceledStores);
+                }
+            }
         }
-
-        //private void PublishChanges(string eventName, IList<LomadeeCoupon> lomadeeCoupons)
-        //{
-        //    var coupons = _mapper.Map<IList<Coupon>>(lomadeeCoupons);
-        //    var kvps = coupons.Select(c => new KeyValuePair<CouponKey, Coupon>(c.Key, c)).ToList();
-        //    var batches = kvps.BatchesOf(1000).Select(c => c.ToList()).ToList();
-        //    foreach (var batch in batches)
-        //    {
-        //        foreach (var keyValuePair in batch)
-        //        {
-        //            _producer.Send(eventName, keyValuePair.Key, keyValuePair.Value);
-        //        }
-        //        //_producer.Send(eventName, batch.ToList(), report => Console.WriteLine(report.ToString()));
-        //    }
-        //}
     }
 }

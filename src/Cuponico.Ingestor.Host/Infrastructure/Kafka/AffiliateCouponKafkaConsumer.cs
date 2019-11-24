@@ -1,22 +1,23 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Confluent.Kafka;
-using Cuponico.Ingestor.Host.Domain;
-using Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Categories;
-using Cuponico.Ingestor.Host.Infrastructure.Settings;
+﻿using Confluent.Kafka;
 using Elevar.Utils;
 using Newtonsoft.Json;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Cuponico.Ingestor.Host.Domain;
+using Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Tickets;
+using Cuponico.Ingestor.Host.Infrastructure.Settings;
 
 namespace Cuponico.Ingestor.Host.Infrastructure.Kafka
 {
-    public class AffiliateCategoryKafkaConsumer
+    public class AffiliateCouponKafkaConsumer
     {
-        private readonly AffiliateCategoryDomainService _domainService;
         private readonly ConsumerConfig _config;
-        public AffiliateCategoryKafkaConsumer(KafkaSettings settings, AffiliateCategoryDomainService domainService)
+        private readonly AffiliateCouponDomainService _domainService;
+        public AffiliateCouponKafkaConsumer(KafkaSettings settings, AffiliateCouponDomainService domainService)
         {
             _domainService = domainService.ThrowIfNull(nameof(domainService));
+
             settings.ThrowIfNull(nameof(settings));
 
             _config = new ConsumerConfig
@@ -24,6 +25,7 @@ namespace Cuponico.Ingestor.Host.Infrastructure.Kafka
                 BootstrapServers = settings.BootstrapServers,
                 SaslMechanism = SaslMechanism.Plain,
                 SecurityProtocol = SecurityProtocol.SaslSsl,
+                HeartbeatIntervalMs = 3000,
                 SaslUsername = settings.Username,
                 SaslPassword = settings.Password,
                 ClientId = settings.ClientId,
@@ -35,18 +37,18 @@ namespace Cuponico.Ingestor.Host.Infrastructure.Kafka
 
         public void Start(CancellationToken cancellationToken)
         {
-            StartReceivingCreatedCategories(cancellationToken);
-            StartReceivingChangedCategories(cancellationToken);
-            StartReceivingCanceledCategories(cancellationToken);
+            StartReceivingCreatedCoupons(cancellationToken);
+            StartReceivingChangedCoupons(cancellationToken);
+            StartReceivingCanceledCoupons(cancellationToken);
         }
 
-        private void StartReceivingCreatedCategories(CancellationToken cancellationToken)
+        private void StartReceivingCreatedCoupons(CancellationToken cancellationToken)
         {
             Task.Factory.StartNew(() =>
             {
                 using (var consumer = new ConsumerBuilder<string, string>(_config).Build())
                 {
-                    consumer.Subscribe(CuponicoEvents.AffiliateCategoryCreated);
+                    consumer.Subscribe(CuponicoEvents.AffiliateCouponCreated);
                     while (true)
                     {
                         try
@@ -55,8 +57,49 @@ namespace Cuponico.Ingestor.Host.Infrastructure.Kafka
 
                             var msg = consumer.Consume(cancellationToken);
 
-                            var affiliateCategoryCreated = JsonConvert.DeserializeObject<AffiliateCategoryCreated>(msg.Value);
-                            _domainService.ProcessUnifiedCategory(affiliateCategoryCreated.Event).ConfigureAwait(false).GetAwaiter().GetResult();
+                            var affiliateCouponCreated = JsonConvert.DeserializeObject<AffiliateCouponCreated>(msg.Value);
+                            _domainService.ProcessCoupon(affiliateCouponCreated.Event).ConfigureAwait(false).GetAwaiter().GetResult();
+                            consumer.Commit();
+                        }
+                        catch (ConsumeException e)
+                        {
+                            Console.WriteLine(e.Message);
+                            Thread.Sleep(TimeSpan.FromSeconds(5));
+                        }
+                        catch (OperationCanceledException e)
+                        {
+                            Console.WriteLine(e.Message);
+                            Thread.Sleep(TimeSpan.FromSeconds(1));
+                            break;
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine(e.Message);
+                            Thread.Sleep(TimeSpan.FromSeconds(5));
+                        }
+                    }
+                    consumer.Close();
+                }
+            }, cancellationToken, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+        }
+
+        private void StartReceivingChangedCoupons(CancellationToken cancellationToken)
+        {
+            Task.Factory.StartNew(() =>
+            {
+                using (var consumer = new ConsumerBuilder<string, string>(_config).Build())
+                {
+                    consumer.Subscribe(CuponicoEvents.AffiliateCouponChanged);
+                    while (true)
+                    {
+                        try
+                        {
+                            cancellationToken.ThrowIfCancellationRequested();
+
+                            var msg = consumer.Consume(cancellationToken);
+
+                            var affiliateCouponChanged = JsonConvert.DeserializeObject<AffiliateCouponChanged>(msg.Value);
+                            _domainService.ProcessCoupon(affiliateCouponChanged.Event).ConfigureAwait(false).GetAwaiter().GetResult();
 
                             consumer.Commit();
                         }
@@ -82,13 +125,13 @@ namespace Cuponico.Ingestor.Host.Infrastructure.Kafka
             }, cancellationToken, TaskCreationOptions.LongRunning, TaskScheduler.Default);
         }
 
-        private void StartReceivingChangedCategories(CancellationToken cancellationToken)
+        private void StartReceivingCanceledCoupons(CancellationToken cancellationToken)
         {
             Task.Factory.StartNew(() =>
             {
                 using (var consumer = new ConsumerBuilder<string, string>(_config).Build())
                 {
-                    consumer.Subscribe(CuponicoEvents.AffiliateCategoryChanged);
+                    consumer.Subscribe(CuponicoEvents.AffiliateCouponCanceled);
                     while (true)
                     {
                         try
@@ -97,50 +140,8 @@ namespace Cuponico.Ingestor.Host.Infrastructure.Kafka
 
                             var msg = consumer.Consume(cancellationToken);
 
-                            var affiliateCategoryChanged = JsonConvert.DeserializeObject<AffiliateCategoryChanged>(msg.Value);
-                            _domainService.ProcessUnifiedCategory(affiliateCategoryChanged.Event).ConfigureAwait(false).GetAwaiter().GetResult();
-
-                            consumer.Commit();
-                        }
-                        catch (ConsumeException e)
-                        {
-                            Console.WriteLine(e.Message);
-                            Thread.Sleep(TimeSpan.FromSeconds(5));
-                        }
-                        catch (OperationCanceledException e)
-                        {
-                            Console.WriteLine(e.Message);
-                            Thread.Sleep(TimeSpan.FromSeconds(1));
-                            break;
-                        }
-                        catch (Exception e)
-                        {
-                            Console.WriteLine(e.Message);
-                            Thread.Sleep(TimeSpan.FromSeconds(5));
-                        }
-                    }
-                    consumer.Close();
-                }
-            }, cancellationToken, TaskCreationOptions.LongRunning, TaskScheduler.Default);
-        }
-
-        private void StartReceivingCanceledCategories(CancellationToken cancellationToken)
-        {
-            Task.Factory.StartNew(() =>
-            {
-                using (var consumer = new ConsumerBuilder<string, string>(_config).Build())
-                {
-                    consumer.Subscribe(CuponicoEvents.AffiliateCategoryCanceled);
-                    while (true)
-                    {
-                        try
-                        {
-                            cancellationToken.ThrowIfCancellationRequested();
-
-                            var msg = consumer.Consume(cancellationToken);
-
-                            var affiliateCategoryCanceled = JsonConvert.DeserializeObject<AffiliateCategoryCanceled>(msg.Value);
-                            _domainService.CancelUnifiedCategory(affiliateCategoryCanceled.Event);
+                            var affiliateCouponCanceled = JsonConvert.DeserializeObject<AffiliateCouponCanceled>(msg.Value);
+                            _domainService.CancelCoupon(affiliateCouponCanceled.Event);
 
                             consumer.Commit();
                         }

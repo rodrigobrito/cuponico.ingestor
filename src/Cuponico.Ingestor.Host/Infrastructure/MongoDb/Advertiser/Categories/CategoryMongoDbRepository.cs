@@ -34,6 +34,8 @@ namespace Cuponico.Ingestor.Host.Infrastructure.MongoDb.Advertiser.Categories
                     cm.MapMember(c => c.CategoryId).SetSerializer(new GuidSerializer(BsonType.String));
                 });
             }
+
+            SaveAsync(Category.GetDefaultCategory()).ConfigureAwait(false).GetAwaiter().GetResult();
         }
 
         public async Task<IList<Category>> GetAllAsync()

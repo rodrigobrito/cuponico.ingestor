@@ -1,4 +1,5 @@
 ﻿using System;
+using Elevar.Utils;
 
 namespace Cuponico.Ingestor.Host.Domain.Advertiser.Categories
 {
@@ -67,6 +68,18 @@ namespace Cuponico.Ingestor.Host.Domain.Advertiser.Categories
             {
                 CategoryId = Guid.NewGuid(),
                 CreatedDate = DateTime.UtcNow
+            };
+        }
+
+        public static Category GetDefaultCategory()
+        {
+            return new Category
+            {
+                CategoryId = Defaults.CategoryId,
+                Name = Defaults.CategoryName,
+                FriendlyName = Defaults.CategoryFriendlyName,
+                ChangedDate = Defaults.CategoryChangedDate,
+                CreatedDate = Defaults.CategoryCreatedDate
             };
         }
     }

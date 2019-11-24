@@ -78,5 +78,19 @@ namespace Cuponico.Ingestor.Host.Domain.Advertiser.Stores
                 CreatedDate = DateTime.UtcNow
             };
         }
+
+        public static Store GetDefaultStore()
+        {
+            return new Store
+            {
+                StoreId = Defaults.StoreId,
+                Name = Defaults.StoreName,
+                FriendlyName = Defaults.StoreFriendlyName,
+                CreatedDate = Defaults.StoreCreatedDate,
+                ChangedDate = Defaults.StoreChangedDate,
+                ImageUrl = Defaults.StoreImageUrl,
+                StoreUrl = Defaults.StoreStoreUrl
+            };
+        }
     }
 }

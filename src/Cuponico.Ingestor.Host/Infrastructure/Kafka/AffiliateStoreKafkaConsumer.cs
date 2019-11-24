@@ -141,7 +141,7 @@ namespace Cuponico.Ingestor.Host.Infrastructure.Kafka
                             var msg = consumer.Consume(cancellationToken);
 
                             var affiliateStoreCanceled = JsonConvert.DeserializeObject<AffiliateStoreCanceled>(msg.Value);
-                            _domainService.CancelUnifiedStore(affiliateStoreCanceled.Event).ConfigureAwait(false).GetAwaiter().GetResult();
+                            _domainService.CancelUnifiedStore(affiliateStoreCanceled.Event);
 
                             consumer.Commit();
                         }

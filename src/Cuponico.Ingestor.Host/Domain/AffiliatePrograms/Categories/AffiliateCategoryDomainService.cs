@@ -100,7 +100,7 @@ namespace Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Categories
                 category.CouponsCount = allMatches.Where(m => m.AdvertiseCategoryId == category.CategoryId).Sum(m => m.CouponsCount);
         }
 
-        public async Task CancelUnifiedCategory(AffiliateCategory affiliateCategory)
+        public void CancelUnifiedCategory(AffiliateCategory affiliateCategory)
         {
 
         }

@@ -34,6 +34,8 @@ namespace Cuponico.Ingestor.Host.Infrastructure.MongoDb.Advertiser.Stores
                     cm.MapMember(c => c.StoreId).SetSerializer(new GuidSerializer(BsonType.String));
                 });
             }
+
+            SaveAsync(Store.GetDefaultStore()).ConfigureAwait(false).GetAwaiter().GetResult();
         }
 
         public async Task<IList<Store>> GetAllAsync()

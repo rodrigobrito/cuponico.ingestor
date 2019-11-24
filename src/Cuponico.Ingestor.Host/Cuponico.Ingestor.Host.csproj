@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <Folder Include="ApplicationService\" />
-    <Folder Include="Domain\Advertiser\Coupons\" />
   </ItemGroup>
 
   <ItemGroup>

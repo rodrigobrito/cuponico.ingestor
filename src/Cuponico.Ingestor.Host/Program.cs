@@ -50,10 +50,12 @@ namespace Cuponico.Ingestor.Host
 
             var affiliateStoreConsumer = (AffiliateStoreKafkaConsumer)services.GetService(typeof(AffiliateStoreKafkaConsumer));
             var affiliateCategoryConsumer = (AffiliateCategoryKafkaConsumer)services.GetService(typeof(AffiliateCategoryKafkaConsumer));
+            var affiliateCouponConsumer = (AffiliateCouponKafkaConsumer)services.GetService(typeof(AffiliateCouponKafkaConsumer));
 
             webServerHost.Start();
             affiliateStoreConsumer.Start(cancelToken);
             affiliateCategoryConsumer.Start(cancelToken);
+            affiliateCouponConsumer.Start(cancelToken);
 
             Console.WriteLine("Started.");
 

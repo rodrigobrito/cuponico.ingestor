@@ -69,7 +69,7 @@ namespace Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Jobs
                 foreach (var bach in baches)
                 {
                     var stores = bach.ToList();
-                    await _cuponicoRepository.SaveAsync(stores.ToList());
+                    await _cuponicoRepository.SaveAsync(stores);
                     var changedStores = AffiliateStoreChanged.CreateMany(stores);
                     await _publisher.PublishAsync(changedStores);
                 }
