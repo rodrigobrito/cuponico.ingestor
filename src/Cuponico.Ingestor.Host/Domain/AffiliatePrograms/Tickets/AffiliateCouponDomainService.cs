@@ -80,7 +80,7 @@ namespace Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Tickets
                 ? Category.GetDefaultCategory()
                 : new Category
                 {
-                    Id = matchedCategory.Id,
+                    Id = matchedCategory.AdvertiseCategoryId,
                     Name = affiliateCoupon.Category.Name,
                     FriendlyName = affiliateCoupon.Category.FriendlyName
                 };
@@ -93,7 +93,7 @@ namespace Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Tickets
                 ? Store.GetDefaultStore()
                 : new Store
                 {
-                    Id = matchedStore.Id,
+                    Id = matchedStore.AdvertiseStoreId,
                     Name = affiliateCoupon.Store.Name,
                     FriendlyName = affiliateCoupon.Store.FriendlyName,
                     StoreUrl = affiliateCoupon.Store.StoreUrl,
