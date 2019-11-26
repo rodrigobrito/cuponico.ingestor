@@ -88,8 +88,6 @@ namespace Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Stores
 
         private static void UpdateStoreProperties(Store store, AffiliateStore affiliateStore, IList<AffiliateStoreMatch> allMatches = null)
         {
-            var advertiseId = affiliateStore.GetAdvertiseId();
-
             store.Name = affiliateStore.Name;
             store.FriendlyName = affiliateStore.FriendlyName;
             store.Description = string.IsNullOrWhiteSpace(affiliateStore.Description) && !string.IsNullOrWhiteSpace(store.Description) ? store.Description : affiliateStore.Description;
