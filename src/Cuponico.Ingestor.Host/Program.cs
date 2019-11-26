@@ -34,7 +34,7 @@ namespace Cuponico.Ingestor.Host
                 scheduler.Schedule<AffiliateStoresSchedulableJobLomadee>().EveryMinute()
                     .PreventOverlapping(nameof(AffiliateStoresSchedulableJobLomadee));
 
-                scheduler.Schedule<AffiliateCategoriesSchedulableJobLomadee>().EveryFiveSeconds()
+                scheduler.Schedule<AffiliateCategoriesSchedulableJobLomadee>().EveryMinute()
                     .PreventOverlapping(nameof(AffiliateCategoriesSchedulableJobLomadee));
 
                 // Zanox
@@ -44,7 +44,7 @@ namespace Cuponico.Ingestor.Host
                 scheduler.Schedule<AffiliateStoresSchedulableJobZanox>().EveryMinute()
                     .PreventOverlapping(nameof(AffiliateStoresSchedulableJobZanox));
 
-                scheduler.Schedule<AffiliateCategoriesSchedulableJobZanox>().EveryFiveSeconds()
+                scheduler.Schedule<AffiliateCategoriesSchedulableJobZanox>().EveryMinute()
                     .PreventOverlapping(nameof(AffiliateCategoriesSchedulableJobZanox));
             });
 
