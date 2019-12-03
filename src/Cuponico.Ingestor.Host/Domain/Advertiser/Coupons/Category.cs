@@ -1,11 +1,8 @@
-﻿using System;
-using Elevar.Utils;
-
-namespace Cuponico.Ingestor.Host.Domain.Advertiser.Coupons
+﻿namespace Cuponico.Ingestor.Host.Domain.Advertiser.Coupons
 {
     public class Category
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; }
         public string Name { get; set; }
         public string FriendlyName { get; set; }
 
@@ -13,7 +10,7 @@ namespace Cuponico.Ingestor.Host.Domain.Advertiser.Coupons
         {
             return new Category
             {
-                Id = Defaults.CategoryId,
+                Id = Defaults.CategoryId.ToString(),
                 Name = Defaults.CategoryName,
                 FriendlyName = Defaults.CategoryFriendlyName
             };

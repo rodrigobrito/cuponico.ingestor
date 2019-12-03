@@ -21,22 +21,22 @@ namespace Cuponico.Ingestor.Host.Infrastructure.MongoDb.Advertiser.General
 
             Wrapper = settings.CreateWrapper();
             Wrapper.CreateCollectionIfNotExistsAsync<FailedEvent>(CollectinoName);
-
-            if (!BsonClassMap.IsClassMapRegistered(typeof(FailedEvent)))
-            {
-                BsonClassMap.RegisterClassMap<FailedEvent>(cm =>
-                {
-                    cm.AutoMap();
-                    cm.MapIdMember(c => c.Id);
-                    cm.MapMember(c => c.Id).SetSerializer(new GuidSerializer(BsonType.String));
-                });
-            }
         }
 
         public async Task SaveAsync(FailedEvent @event)
         {
             if (@event == null) return;
             await Wrapper.SaveAsync(CollectinoName, @event, x => x.Id == @event.Id);
+        }
+
+        public static void RegisterClassMap()
+        {
+            BsonClassMap.RegisterClassMap<FailedEvent>(cm =>
+            {
+                cm.AutoMap();
+                cm.MapIdMember(c => c.Id);
+                cm.MapMember(c => c.Id).SetSerializer(new GuidSerializer(BsonType.String));
+            });
         }
     }
 }

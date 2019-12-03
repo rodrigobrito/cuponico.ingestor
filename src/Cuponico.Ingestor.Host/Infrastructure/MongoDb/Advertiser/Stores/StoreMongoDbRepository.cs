@@ -1,14 +1,14 @@
 ﻿using Cuponico.Ingestor.Host.Domain.Advertiser.Stores;
+using Cuponico.Ingestor.Host.Infrastructure.Settings.Advertiser;
 using Elevar.Infrastructure.MongoDb;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Cuponico.Ingestor.Host.Infrastructure.Settings.Advertiser;
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Serializers;
 
 namespace Cuponico.Ingestor.Host.Infrastructure.MongoDb.Advertiser.Stores
 {
@@ -24,17 +24,6 @@ namespace Cuponico.Ingestor.Host.Infrastructure.MongoDb.Advertiser.Stores
 
             Wrapper = settings.CreateWrapper();
             Wrapper.CreateCollectionIfNotExistsAsync<Store>(CollectinoName);
-
-            if (!BsonClassMap.IsClassMapRegistered(typeof(Store)))
-            {
-                BsonClassMap.RegisterClassMap<Store>(cm =>
-                {
-                    cm.AutoMap();
-                    cm.MapIdMember(c => c.StoreId);
-                    cm.MapMember(c => c.StoreId).SetSerializer(new GuidSerializer(BsonType.String));
-                });
-            }
-
             SaveAsync(Store.GetDefaultStore()).ConfigureAwait(false).GetAwaiter().GetResult();
         }
 
@@ -63,6 +52,16 @@ namespace Cuponico.Ingestor.Host.Infrastructure.MongoDb.Advertiser.Stores
                 var filter = builder.Eq(c => c.StoreId, id);
                 await Wrapper.DeleteOneAsync(CollectinoName, filter);
             }
+        }
+
+        public static void RegisterClassMap()
+        {
+            BsonClassMap.RegisterClassMap<Store>(cm =>
+            {
+                cm.AutoMap();
+                cm.MapIdMember(c => c.StoreId);
+                cm.MapMember(c => c.StoreId).SetSerializer(new GuidSerializer(BsonType.String));
+            });
         }
     }
 }

@@ -4,7 +4,7 @@ namespace Cuponico.Ingestor.Host.Domain.Advertiser.Coupons
 {
     public class Coupon
     {
-        public Guid CouponId { get; set; }
+        public Guid CouponId { get; set; } = Guid.Empty;
         public string Description { get; set; }
         public string FriendlyDescription { get; set; }
         public string Remark { get; set; }

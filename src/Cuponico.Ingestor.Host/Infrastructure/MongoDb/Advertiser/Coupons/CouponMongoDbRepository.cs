@@ -24,34 +24,6 @@ namespace Cuponico.Ingestor.Host.Infrastructure.MongoDb.Advertiser.Coupons
 
             Wrapper = settings.CreateWrapper();
             Wrapper.CreateCollectionIfNotExistsAsync<Coupon>(CollectinoName);
-
-            if (!BsonClassMap.IsClassMapRegistered(typeof(Store)))
-            {
-                BsonClassMap.RegisterClassMap<Store>(cm =>
-                {
-                    cm.AutoMap();
-                    cm.MapMember(c => c.Id).SetSerializer(new GuidSerializer(BsonType.String));
-                });
-            }
-
-            if (!BsonClassMap.IsClassMapRegistered(typeof(Category)))
-            {
-                BsonClassMap.RegisterClassMap<Category>(cm =>
-                {
-                    cm.AutoMap();
-                    cm.MapMember(c => c.Id).SetSerializer(new GuidSerializer(BsonType.String));
-                });
-            }
-
-            if (!BsonClassMap.IsClassMapRegistered(typeof(Coupon)))
-            {
-                BsonClassMap.RegisterClassMap<Coupon>(cm =>
-                {
-                    cm.AutoMap();
-                    cm.MapIdMember(c => c.CouponId);
-                    cm.MapMember(c => c.CouponId).SetSerializer(new GuidSerializer(BsonType.String));
-                });
-            }
         }
 
         public async Task<IList<Coupon>> GetAllAsync()
@@ -79,6 +51,16 @@ namespace Cuponico.Ingestor.Host.Infrastructure.MongoDb.Advertiser.Coupons
                 var filter = builder.Eq(c => c.CouponId, id);
                 await Wrapper.DeleteOneAsync(CollectinoName, filter);
             }
+        }
+
+        public static void RegisterClassMap()
+        {
+            BsonClassMap.RegisterClassMap<Coupon>(cm =>
+            {
+                cm.AutoMap();
+                cm.MapIdMember(c => c.CouponId);
+                cm.MapMember(c => c.CouponId).SetSerializer(new GuidSerializer(BsonType.String));
+            });
         }
     }
 }

@@ -43,7 +43,7 @@ namespace Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Tickets
             {
                 var coupons = await _couponRepository.GetAllAsync();
                 var couponToChange = coupons.FirstOrDefault(c => c.CouponId == matchedCoupon.AdvertiseCouponId); 
-                UpdateProperties(couponToChange, affiliateCoupon, storesMatches, categoriesMatches);
+                UpdateProperties(couponToChange, affiliateCoupon, storesMatches, categoriesMatches, false);
                 await _couponRepository.SaveAsync(couponToChange);
                 return;
             }
@@ -58,17 +58,21 @@ namespace Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Tickets
         private static void UpdateProperties(Coupon coupon,
             AffiliateCoupon affiliateCoupon,
             IList<AffiliateStoreMatch> storesMatches,
-            IList<AffiliateCategoryMatch> categoriesMatches)
+            IList<AffiliateCategoryMatch> categoriesMatches, 
+            bool isNew = true)
         {
             coupon.ChangedDate = DateTime.UtcNow;
             coupon.Code = affiliateCoupon.Code;
             coupon.CouponLink = affiliateCoupon.CouponLink;
-            coupon.Description = affiliateCoupon.Description;
-            coupon.Discount = affiliateCoupon.Discount;
-            coupon.FriendlyDescription = affiliateCoupon.FriendlyDescription;
-            coupon.IsPercentage = affiliateCoupon.IsPercentage;
+            if (isNew)
+            {
+                coupon.Description = affiliateCoupon.Description;
+                coupon.Discount = affiliateCoupon.Discount;
+                coupon.FriendlyDescription = affiliateCoupon.FriendlyDescription;
+                coupon.IsPercentage = affiliateCoupon.IsPercentage;
+                coupon.Remark = affiliateCoupon.Remark;
+            }
             coupon.New = affiliateCoupon.New;
-            coupon.Remark = affiliateCoupon.Remark;
             coupon.Shipping = affiliateCoupon.Shipping;
             coupon.Validity = affiliateCoupon.Validity.ToUniversalTime();
 
@@ -80,7 +84,7 @@ namespace Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Tickets
                 ? Category.GetDefaultCategory()
                 : new Category
                 {
-                    Id = matchedCategory.AdvertiseCategoryId,
+                    Id = matchedCategory.AdvertiseCategoryId.ToString(),
                     Name = affiliateCoupon.Category.Name,
                     FriendlyName = affiliateCoupon.Category.FriendlyName
                 };
@@ -93,7 +97,7 @@ namespace Cuponico.Ingestor.Host.Domain.AffiliatePrograms.Tickets
                 ? Store.GetDefaultStore()
                 : new Store
                 {
-                    Id = matchedStore.AdvertiseStoreId,
+                    Id = matchedStore.AdvertiseStoreId.ToString(),
                     Name = affiliateCoupon.Store.Name,
                     FriendlyName = affiliateCoupon.Store.FriendlyName,
                     StoreUrl = affiliateCoupon.Store.StoreUrl,

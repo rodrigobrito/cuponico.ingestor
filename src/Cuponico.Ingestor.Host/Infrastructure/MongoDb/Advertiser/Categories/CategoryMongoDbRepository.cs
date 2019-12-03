@@ -25,16 +25,6 @@ namespace Cuponico.Ingestor.Host.Infrastructure.MongoDb.Advertiser.Categories
             Wrapper = settings.CreateWrapper();
             Wrapper.CreateCollectionIfNotExistsAsync<Category>(CollectinoName);
 
-            if (!BsonClassMap.IsClassMapRegistered(typeof(Category)))
-            {
-                BsonClassMap.RegisterClassMap<Category>(cm =>
-                {
-                    cm.AutoMap();
-                    cm.MapIdMember(c => c.CategoryId);
-                    cm.MapMember(c => c.CategoryId).SetSerializer(new GuidSerializer(BsonType.String));
-                });
-            }
-
             SaveAsync(Category.GetDefaultCategory()).ConfigureAwait(false).GetAwaiter().GetResult();
         }
 
@@ -63,6 +53,16 @@ namespace Cuponico.Ingestor.Host.Infrastructure.MongoDb.Advertiser.Categories
                 var filter = builder.Eq(c => c.CategoryId, id);
                 await Wrapper.DeleteOneAsync(CollectinoName, filter);
             }
+        }
+
+        public static void RegisterClassMap()
+        {
+            BsonClassMap.RegisterClassMap<Category>(cm =>
+            {
+                cm.AutoMap();
+                cm.MapIdMember(c => c.CategoryId);
+                cm.MapMember(c => c.CategoryId).SetSerializer(new GuidSerializer(BsonType.String));
+            });
         }
     }
 }

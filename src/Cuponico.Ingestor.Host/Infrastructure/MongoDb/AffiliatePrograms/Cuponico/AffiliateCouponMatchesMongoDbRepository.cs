@@ -22,18 +22,6 @@ namespace Cuponico.Ingestor.Host.Infrastructure.MongoDb.AffiliatePrograms.Cuponi
                 throw new ArgumentNullException(nameof(settings));
 
             Wrapper = settings.CreateWrapper();
-
-            if (!BsonClassMap.IsClassMapRegistered(typeof(AffiliateCouponMatch)))
-            {
-                BsonClassMap.RegisterClassMap<AffiliateCouponMatch>(cm =>
-                {
-                    cm.AutoMap();
-                    cm.MapIdMember(c => c.Id);
-                    cm.MapMember(c => c.Id).SetSerializer(new GuidSerializer(BsonType.String));
-                    cm.MapMember(c => c.AdvertiseCouponId).SetSerializer(new GuidSerializer(BsonType.String));
-                });
-            }
-
             Wrapper.CreateCollectionIfNotExistsAsync<AffiliateCouponMatch>(CollectinoName);
             Wrapper.CreateIndexIfNotExistsAsync<AffiliateCouponMatch>(CollectinoName, "AdvertiseCouponId", 
                 null,
@@ -63,6 +51,17 @@ namespace Cuponico.Ingestor.Host.Infrastructure.MongoDb.AffiliatePrograms.Cuponi
             await Wrapper.SaveAsync(CollectinoName, matchedCoupon, x => x.AdvertiseCouponId == matchedCoupon.AdvertiseCouponId 
                                                                        && x.AffiliateProgram == matchedCoupon.AffiliateProgram 
                                                                        && x.AffiliateCouponId == matchedCoupon.AffiliateCouponId);
+        }
+
+        public static void RegisterClassMap()
+        {
+            BsonClassMap.RegisterClassMap<AffiliateCouponMatch>(cm =>
+            {
+                cm.AutoMap();
+                cm.MapIdMember(c => c.Id);
+                cm.MapMember(c => c.Id).SetSerializer(new GuidSerializer(BsonType.String));
+                cm.MapMember(c => c.AdvertiseCouponId).SetSerializer(new GuidSerializer(BsonType.String));
+            });
         }
     }
 }

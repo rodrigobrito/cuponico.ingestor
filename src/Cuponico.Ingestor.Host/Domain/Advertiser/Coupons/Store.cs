@@ -4,7 +4,7 @@ namespace Cuponico.Ingestor.Host.Domain.Advertiser.Coupons
 {
     public class Store
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; }
         public string Name { get; set; }
         public string FriendlyName { get; set; }
         public Uri ImageUrl { get; set; }
@@ -13,7 +13,7 @@ namespace Cuponico.Ingestor.Host.Domain.Advertiser.Coupons
         {
             return new Store
             {
-                Id = Defaults.StoreId,
+                Id = Defaults.StoreId.ToString(),
                 Name = Defaults.StoreName,
                 FriendlyName = Defaults.StoreFriendlyName,
                 ImageUrl = Defaults.StoreImageUrl,

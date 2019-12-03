@@ -36,6 +36,7 @@ using Cuponico.Ingestor.Host.Infrastructure.Http.AffiliatePrograms.Lomadee.Coupo
 using Cuponico.Ingestor.Host.Infrastructure.Http.AffiliatePrograms.Zanox.Incentives;
 using Cuponico.Ingestor.Host.Infrastructure.Http.AffiliatePrograms.Zanox.Medias;
 using Cuponico.Ingestor.Host.Infrastructure.Http.AffiliatePrograms.Zanox.Programs;
+using Cuponico.Ingestor.Host.Infrastructure.MongoDb;
 using Cuponico.Ingestor.Host.Infrastructure.MongoDb.Advertiser.Categories;
 using Cuponico.Ingestor.Host.Infrastructure.MongoDb.Advertiser.Coupons;
 using Cuponico.Ingestor.Host.Infrastructure.MongoDb.Advertiser.General;
@@ -97,6 +98,8 @@ namespace Cuponico.Ingestor.Host
         {
             // Add access to generic IConfigurationRoot
             services.AddSingleton(Configuration);
+
+            MongoRegister.RegisterClassMap();
 
             // Add logging
             services.AddLogging((logging) =>

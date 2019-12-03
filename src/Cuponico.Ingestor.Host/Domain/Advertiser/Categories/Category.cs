@@ -1,5 +1,4 @@
 ﻿using System;
-using Elevar.Utils;
 
 namespace Cuponico.Ingestor.Host.Domain.Advertiser.Categories
 {

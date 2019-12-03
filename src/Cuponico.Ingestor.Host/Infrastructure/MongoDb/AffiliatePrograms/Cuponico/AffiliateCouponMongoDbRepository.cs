@@ -16,15 +16,6 @@ namespace Cuponico.Ingestor.Host.Infrastructure.MongoDb.AffiliatePrograms.Cuponi
 
         public AffiliateCouponMongoDbRepository(IMongoWrapper wrapper)
         {
-            if (!BsonClassMap.IsClassMapRegistered(typeof(AffiliateCoupon)))
-            {
-                BsonClassMap.RegisterClassMap<AffiliateCoupon>(cm =>
-                {
-                    cm.AutoMap();
-                    cm.MapIdMember(c => c.CouponId);
-                });
-            }
-
             Wrapper = wrapper ?? throw new ArgumentNullException(nameof(wrapper));
             Wrapper.CreateCollectionIfNotExistsAsync<AffiliateCoupon>(CollectinoName);
             Wrapper.CreateIndexIfNotExistsAsync<AffiliateCoupon>(CollectinoName, "couponId", null, e => e.CouponId);
@@ -50,6 +41,15 @@ namespace Cuponico.Ingestor.Host.Infrastructure.MongoDb.AffiliatePrograms.Cuponi
                 await Wrapper.DeleteOneAsync(CollectinoName, filter);
             }
             throw new NotImplementedException();
+        }
+
+        public static void RegisterClassMap()
+        {
+            BsonClassMap.RegisterClassMap<AffiliateCoupon>(cm =>
+            {
+                cm.AutoMap();
+                cm.MapIdMember(c => c.CouponId);
+            });
         }
     }
 }
